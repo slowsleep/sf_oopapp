@@ -9,7 +9,11 @@ export const addToStorage = function (obj, key) {
 };
 
 export const generateTestUser = function (User) {
-  localStorage.clear();
-  const testUser = new User("test", "qwerty123");
-  User.save(testUser);
+  if (!localStorage.users) {
+    const testUser = new User("test", "qwerty123");
+    User.save(testUser);
+
+    const testAdmin = new User("admin", "admin123");
+    User.save(testAdmin);
+  }
 };
