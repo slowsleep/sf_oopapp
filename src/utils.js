@@ -13,7 +13,7 @@ export const generateTestUser = function (User) {
     const testUser = new User("test", "qwerty123");
     User.save(testUser);
 
-    const testAdmin = new User("admin", "admin123");
+    const testAdmin = new User("admin", "admin123", "admin");
     User.save(testAdmin);
   }
 };

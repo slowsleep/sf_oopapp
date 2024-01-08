@@ -1,9 +1,10 @@
 import { appState } from "../app";
-import { User } from "../models/User";
+import { isExists, getUserById } from "../controllers/UserController";
 
 export const authUser = function (login, password) {
-  const user = new User(login, password);
-  if (!user.hasAccess) return false;
-  appState.currentUser = user;
+  const userId = isExists(login, password);
+  if (!userId) return false;
+  const currentUser = getUserById(userId);
+  appState.currentUser = currentUser;
   return true;
 };

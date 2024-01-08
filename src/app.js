@@ -18,33 +18,15 @@ const navRight = document.querySelector("#app-nav-right");
 if (localStorage.getItem("user")) {
   navRight.innerHTML = formLoginned;
   renderContent(true);
-  listenLogoutFrom();
+  renderNavRight(true);
+  listenLogoutForm();
 } else {
   navRight.innerHTML = formUnloginned;
-  listenLoginFrom();
+  listenLoginForm();
 }
 
 
-function renderContent(isAuth) {
-  let fieldHTMLContent = isAuth ? taskFieldTemplate : noAccessTemplate;
-  document.querySelector("#content").innerHTML = fieldHTMLContent;
-}
-
-function renderNavRight(isAuth) {
-  document.querySelector("#app-nav-right").innerHTML = isAuth ? formLoginned : formUnloginned;
-}
-
-function listenLogoutFrom() {
-  const logoutFrom = document.querySelector("#app-logout-form");
-
-  logoutFrom.addEventListener("submit", function() {
-    localStorage.removeItem("user");
-    renderContent(false);
-    renderNavRight(false);
-  });
-}
-
-function listenLoginFrom() {
+function listenLoginForm() {
   const loginForm = document.querySelector("#app-login-form");
 
   loginForm.addEventListener("submit", function (e) {
@@ -52,13 +34,37 @@ function listenLoginFrom() {
     const formData = new FormData(loginForm);
     const login = formData.get("login");
     const password = formData.get("password");
-
     const isAuth = authUser(login, password);
 
     if (isAuth) {
-      localStorage.setItem("user", JSON.stringify({ id: appState.currentUser.id }));
+      localStorage.setItem("user", JSON.stringify(
+        {
+          id: appState.currentUser.id,
+          role: appState.currentUser.role
+        })
+      );
     }
     renderContent(isAuth);
     renderNavRight(isAuth);
+    listenLogoutForm();
   });
+}
+
+function listenLogoutForm() {
+  const logoutForm = document.querySelector("#app-logout-form");
+  console.log("logout")
+
+  logoutForm.addEventListener("submit", function() {
+    localStorage.removeItem("user");
+  });
+}
+
+function renderContent(isAuth) {
+  let fieldHTMLContent = isAuth ? taskFieldTemplate : noAccessTemplate;
+  document.querySelector("#content").innerHTML = fieldHTMLContent;
+}
+
+function renderNavRight(isAuth) {
+  let fieldHTMLContent = isAuth ? formLoginned : formUnloginned;
+  document.querySelector("#app-nav-right").innerHTML = fieldHTMLContent;
 }
