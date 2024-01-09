@@ -14,6 +14,7 @@ if (localStorage.getItem("user")) {
   render.content(true);
   render.navRight(true);
   listener.logoutForm();
+  listener.addTaskBacklog();
 } else {
   render.navRight(false);
   listener.loginForm();

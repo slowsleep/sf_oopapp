@@ -3,16 +3,29 @@
 <div class="container-fluid overflow-hidden">
     <div class="row gx-5">
         <div class="col">
-            <div class="p-2 border rounded bg-status--backlog">Backlog</div>
+            <div class="p-2 border rounded bg-status--backlog">
+                <p>Backlog</p>
+                <ul id="app-tasks-list-backlog">
+                    <li>1 task</li>
+                </ul>
+                <button id="app-add-task-backlog" class="btn">+ Add card</button>
+                <button id="app-submit-add-task-backlog" class="btn">Submit</button>
+            </div>
         </div>
         <div class="col">
-            <div class="p-2 border rounded bg-status--ready">Ready</div>
+            <div class="p-2 border rounded bg-status--ready">
+                <p>Ready</p>
+            </div>
         </div>
         <div class="col">
-            <div class="p-2 border rounded bg-status--in-progress">In progress</div>
+            <div class="p-2 border rounded bg-status--in-progress">
+                <p>In progress</p>
+            </div>
         </div>
         <div class="col">
-            <div class="p-2 border rounded bg-status--finished">Finished</div>
+            <div class="p-2 border rounded bg-status--finished">
+                <p>Finished</p>
+            </div>
         </div>
     </div>
 </div>

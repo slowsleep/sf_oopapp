@@ -37,3 +37,38 @@ export function logoutForm() {
         localStorage.removeItem("user");
     });
 }
+
+export function addTaskBacklog() {
+    const btnAddTaskBacklog = document.querySelector("#app-add-task-backlog");
+
+    btnAddTaskBacklog.addEventListener("click", function(e) {
+        const listTasksBacklog = document.querySelector("#app-tasks-list-backlog");
+        const btnSubmitAddTaskBacklog = document.querySelector("#app-submit-add-task-backlog");
+        const textArea = document.createElement("textarea");
+        textArea.classList = "rounded";
+        textArea.textContent = "";
+        listTasksBacklog.appendChild(textArea);
+        e.target.style.display = "none";
+
+        if (btnSubmitAddTaskBacklog.style.display == "none") {
+            btnSubmitAddTaskBacklog.style.display = "block";
+        }
+
+        btnSubmitAddTaskBacklog.addEventListener("click", function(e) {
+            e.target.style.display = "none";
+            const newTask = document.createElement("li");
+            newTask.style.classList = "rounded bg-light";
+            newTask.draggable = true;
+
+            if (textArea.value) {
+                newTask.textContent = textArea.value;
+                listTasksBacklog.removeChild(listTasksBacklog.lastChild)
+                listTasksBacklog.appendChild(newTask);
+            } else {
+                listTasksBacklog.removeChild(listTasksBacklog.lastChild);
+            }
+
+            btnAddTaskBacklog.style.display = "block";
+        });
+    })
+}
