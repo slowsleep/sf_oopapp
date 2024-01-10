@@ -13,6 +13,7 @@ generateTestUser(User);
 if (localStorage.getItem("user")) {
   render.content(true);
   render.navRight(true);
+  render.footer();
   listener.logoutForm();
   listener.addTaskBacklog();
 } else {

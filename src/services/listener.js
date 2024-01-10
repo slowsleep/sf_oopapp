@@ -22,7 +22,9 @@ export function loginForm() {
             );
             render.content(isAuth);
             render.navRight(isAuth);
+            render.footer();
             logoutForm();
+            addTaskBacklog();
         } else {
             render.content(isAuth);
             render.navRight(isAuth);
@@ -35,6 +37,7 @@ export function logoutForm() {
 
     logoutForm.addEventListener("submit", function () {
         localStorage.removeItem("user");
+        window.location.reload();
     });
 }
 
@@ -64,6 +67,7 @@ export function addTaskBacklog() {
                 newTask.textContent = textArea.value;
                 listTasksBacklog.removeChild(listTasksBacklog.lastChild)
                 listTasksBacklog.appendChild(newTask);
+                // TODO: save task
             } else {
                 listTasksBacklog.removeChild(listTasksBacklog.lastChild);
             }
