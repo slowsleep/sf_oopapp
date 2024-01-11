@@ -1,6 +1,6 @@
-import * as render from "./render";
 import { authUser } from "./auth";
 import { appState } from "../app";
+import { Task } from "../models/Task";
 
 export function loginForm() {
     const loginForm = document.querySelector("#app-login-form");
@@ -20,15 +20,10 @@ export function loginForm() {
                     role: appState.currentUser.role,
                 })
             );
-            render.content(isAuth);
-            render.navRight(isAuth);
-            render.footer();
-            logoutForm();
-            addTaskBacklog();
-        } else {
-            render.content(isAuth);
-            render.navRight(isAuth);
+
         }
+
+        window.location.reload();
     });
 }
 
@@ -48,8 +43,9 @@ export function addTaskBacklog() {
         const listTasksBacklog = document.querySelector("#app-tasks-list-backlog");
         const btnSubmitAddTaskBacklog = document.querySelector("#app-submit-add-task-backlog");
         const textArea = document.createElement("textarea");
+
         textArea.classList = "rounded";
-        textArea.textContent = "";
+        textArea.id = "app-textarea-add-backlog";
         listTasksBacklog.appendChild(textArea);
         e.target.style.display = "none";
 
@@ -58,16 +54,20 @@ export function addTaskBacklog() {
         }
 
         btnSubmitAddTaskBacklog.addEventListener("click", function(e) {
+            e.stopImmediatePropagation();
             e.target.style.display = "none";
             const newTask = document.createElement("li");
             newTask.style.classList = "rounded bg-light";
             newTask.draggable = true;
 
-            if (textArea.value) {
-                newTask.textContent = textArea.value;
+            let textareaAddBacklog = document.querySelector("#app-textarea-add-backlog");
+
+            if (textareaAddBacklog.value) {
+                let taskEntity = new Task(textareaAddBacklog.value, appState.currentUser.id, "backlog");
+                Task.save(taskEntity);
+                newTask.textContent = textareaAddBacklog.value;
                 listTasksBacklog.removeChild(listTasksBacklog.lastChild)
                 listTasksBacklog.appendChild(newTask);
-                // TODO: save task
             } else {
                 listTasksBacklog.removeChild(listTasksBacklog.lastChild);
             }
