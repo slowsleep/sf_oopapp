@@ -2,6 +2,7 @@ import { authUser } from "./auth";
 import { appState } from "../app";
 import { Task } from "../models/Task";
 import * as TaskController from "../controllers/TaskController";
+import { addTaskToList } from "./render";
 
 export function loginForm() {
     const loginForm = document.querySelector("#app-login-form");
@@ -41,13 +42,12 @@ export function addTaskBacklog() {
     const btnAddTaskBacklog = document.querySelector("#app-add-task-backlog");
 
     btnAddTaskBacklog.addEventListener("click", function(e) {
-        const listTasksBacklog = document.querySelector("#app-tasks-list-backlog");
+        const taskBacklogList = document.querySelector("#app-tasks-list-backlog");
         const btnSubmitAddTaskBacklog = document.querySelector("#app-submit-add-task-backlog");
         const textArea = document.createElement("textarea");
-
         textArea.classList = "rounded";
         textArea.id = "app-textarea-add-backlog";
-        listTasksBacklog.appendChild(textArea);
+        taskBacklogList.appendChild(textArea);
         e.target.style.display = "none";
 
         if (btnSubmitAddTaskBacklog.style.display == "none") {
@@ -57,18 +57,21 @@ export function addTaskBacklog() {
         btnSubmitAddTaskBacklog.addEventListener("click", function(e) {
             e.stopImmediatePropagation();
             e.target.style.display = "none";
-            const newTask = document.createElement("li");
-            newTask.style.classList = "rounded bg-light";
-            newTask.draggable = true;
 
             let textareaAddBacklog = document.querySelector("#app-textarea-add-backlog");
 
             if (textareaAddBacklog.value) {
+
                 let taskEntity = new Task(textareaAddBacklog.value, appState.currentUser.id, "backlog");
                 Task.save(taskEntity);
-                newTask.textContent = textareaAddBacklog.value;
-                listTasksBacklog.removeChild(listTasksBacklog.lastChild)
-                listTasksBacklog.appendChild(newTask);
+
+                let task = {
+                    id: taskEntity.id,
+                    title: textareaAddBacklog.value
+                }
+
+                taskBacklogList.removeChild(taskBacklogList.lastChild)
+                addTaskToList(taskBacklogList, task);
 
                 const btnAddTaskReady =  document.querySelector("#app-add-task-ready");
 
@@ -76,7 +79,7 @@ export function addTaskBacklog() {
                     btnAddTaskReady.removeAttribute("disabled");
                 }
             } else {
-                listTasksBacklog.removeChild(listTasksBacklog.lastChild);
+                taskBacklogList.removeChild(taskBacklogList.lastChild);
             }
 
             btnAddTaskBacklog.style.display = "block";
@@ -91,26 +94,39 @@ export function addTaskReady() {
     btnAddTaskReady.addEventListener("click", function () {
         let user = appState.currentUser;
         let backlogTasks = TaskController.getUsersTasksByStatus(user.id, "backlog");
+        let selectReady = document.querySelector("#app-select-ready");
+        selectReady.innerHTML = "";
+        let defaultOption = document.createElement("option");
+        defaultOption.textContent = "Выберите задачу";
+        selectReady.appendChild(defaultOption);
 
         if (backlogTasks.length) {
-            console.log(backlogTasks);
-            let tasksListReady = document.querySelector("#app-tasks-list-ready");
-            let div = document.createElement("div");
-            let select = document.createElement("select");
-            select.classList = "form-select";
-            let defaultOption = document.createElement("option");
-            defaultOption.textContent = "Выберите задачу";
-            select.appendChild(defaultOption);
+            let taskReadyList = document.querySelector("#app-tasks-list-ready");
 
             for (let task of backlogTasks) {
                 let option = document.createElement("option");
                 option.textContent = task.title;
                 option.dataset.id = task.id;
-                select.appendChild(option);
+                selectReady.appendChild(option);
             }
 
-            div.appendChild(select);
-            tasksListReady.after(div);
+            if (selectReady.style.display == "none") {
+                selectReady.style.display = "block";
+            }
+
+            selectReady.addEventListener("change", function(e) {
+                e.stopImmediatePropagation();
+                let selectedTask = {
+                    id: e.target.options[e.target.selectedIndex].dataset.id,
+                    title: selectReady.value
+                }
+                let taskBacklogList = document.querySelector("#app-tasks-list-backlog");
+                let oldTaskFromBacklog = document.querySelector(`[data-id="${selectedTask.id}"]`);
+                taskBacklogList.removeChild(oldTaskFromBacklog);
+                TaskController.setStatus(selectedTask.id, "ready");
+                addTaskToList(taskReadyList, selectedTask);
+                e.target.style.display = "none";
+            })
         }
     });
 
