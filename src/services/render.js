@@ -17,6 +17,8 @@ export function content(isAuth) {
             document.querySelector(`#app-add-task-${status}`).setAttribute("disabled", true);
         });
 
+        document.querySelector("#app-select-ready").style.display = "none";
+
         let tasksListBacklog = document.querySelector("#app-tasks-list-backlog");
         let tasksListReady = document.querySelector("#app-tasks-list-ready");
         let tasksListInProgress = document.querySelector("#app-tasks-list-in-progress");
@@ -33,9 +35,13 @@ export function content(isAuth) {
             if (backlogTasks) {
                 document.querySelector("#app-add-task-ready").removeAttribute("disabled");
                 backlogTasks.map((taskBacklog) => {
-                    let taskToAppend = document.createElement("li");
-                    taskToAppend.textContent = taskBacklog.title;
-                    tasksListBacklog.appendChild(taskToAppend);
+                    addTaskToList(tasksListBacklog, taskBacklog);
+                });
+            }
+            if (readyTasks) {
+                document.querySelector("#app-add-task-in-progress").removeAttribute("disabled");
+                readyTasks.map((readyTask) => {
+                    addTaskToList(tasksListReady, readyTask);
                 });
             }
 
@@ -46,6 +52,16 @@ export function content(isAuth) {
     }
 }
 
+export function addTaskToList(taskList, task) {
+    let li = document.createElement("li");
+    li.dataset.id = task.id;
+    let taskToAppend = document.createElement("div");
+    taskToAppend.classList = "rounded bg-light p-1 m-2 bg-opacity-50";
+    taskToAppend.textContent = task.title;
+    li.appendChild(taskToAppend);
+    taskList.appendChild(li);
+}
+
 export function navRight(isAuth) {
     let fieldHTMLContent = isAuth ? formLoginned : formUnloginned;
     document.querySelector("#app-nav-right").innerHTML = fieldHTMLContent;
@@ -54,3 +70,4 @@ export function navRight(isAuth) {
 export function footer() {
     document.querySelector("#app-footer-counters").innerHTML = tasksCounters;
 }
+
