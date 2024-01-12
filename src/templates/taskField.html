@@ -5,7 +5,7 @@
         <div class="col">
             <div class="p-2 border rounded bg-status--backlog">
                 <p>Backlog</p>
-                <ul id="app-tasks-list-backlog"></ul>
+                <ul class="list-unstyled" id="app-tasks-list-backlog"></ul>
                 <button id="app-add-task-backlog" class="btn">+ Add card</button>
                 <button id="app-submit-add-task-backlog" class="btn">Submit</button>
             </div>
@@ -13,7 +13,9 @@
         <div class="col">
             <div class="p-2 border rounded bg-status--ready">
                 <p>Ready</p>
-                <ul id="app-tasks-list-ready"></ul>
+                <ul class="list-unstyled" id="app-tasks-list-ready"></ul>
+                <select class="form-select" name="app-select-ready" id="app-select-ready">
+                </select>
                 <button id="app-add-task-ready" class="btn">+ Add card</button>
                 <button id="app-submit-add-task-ready" class="btn">Submit</button>
             </div>
@@ -21,7 +23,7 @@
         <div class="col">
             <div class="p-2 border rounded bg-status--in-progress">
                 <p>In progress</p>
-                <ul id="app-tasks-list-in-progress"></ul>
+                <ul class="list-unstyled" id="app-tasks-list-in-progress"></ul>
                 <button id="app-add-task-in-progress" class="btn">+ Add card</button>
                 <button id="app-submit-add-task-in-progress" class="btn">Submit</button>
             </div>
@@ -29,7 +31,7 @@
         <div class="col">
             <div class="p-2 border rounded bg-status--finished">
                 <p>Finished</p>
-                <ul id="app-tasks-list-finished"></ul>
+                <ul class="list-unstyled" id="app-tasks-list-finished"></ul>
                 <button id="app-add-task-finished" class="btn">+ Add card</button>
                 <button id="app-submit-add-task-finished" class="btn">Submit</button>
             </div>
