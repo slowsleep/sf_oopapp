@@ -1,13 +1,15 @@
-import { getFromStorage } from "../utils";
+import { getFromStorage, addToStorage, updateStorage } from "../utils";
 
 export function getTaskById(id) {
     try {
         const tasks = getFromStorage("tasks");
+
         for (let task of tasks) {
             if (task.id == id) {
                 return task;
             }
         }
+        
         return false;
     } catch (e) {
         throw new Error(e);
@@ -40,5 +42,17 @@ export function getUsersTasksByStatus(userId, status) {
     }
 
     return tasksByStatus.length ? tasksByStatus : false;
+}
+
+export function setStatus(taskId, status) {
+    let tasks = getFromStorage("tasks");
+
+    for (let task of tasks) {
+        if (task.id == taskId) {
+            task.status = status;
+        }
+    }
+
+    updateStorage("tasks", tasks);
 }
 
