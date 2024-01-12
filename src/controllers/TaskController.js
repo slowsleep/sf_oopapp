@@ -31,6 +31,8 @@ export function getUsersTasksByStatus(userId, status) {
     let usersTasks = getUsersTasks(userId);
     let tasksByStatus = [];
 
+    if (!usersTasks) return false;
+
     for (let task of usersTasks) {
         if (task.status == status) {
             tasksByStatus.push(task);
