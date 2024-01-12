@@ -17,23 +17,28 @@ export function content(isAuth) {
             document.querySelector(`#app-add-task-${status}`).setAttribute("disabled", true);
         });
 
-        let TasksListBacklog = document.querySelector(
-            "#app-tasks-list-backlog"
-        );
+        let tasksListBacklog = document.querySelector("#app-tasks-list-backlog");
+        let tasksListReady = document.querySelector("#app-tasks-list-ready");
+        let tasksListInProgress = document.querySelector("#app-tasks-list-in-progress");
+        let tasksListFinished = document.querySelector("#app-tasks-list-finished");
+
         let user = appState.currentUser;
 
         if (user) {
-            let usersTasks = TaskController.getUsersTasks(user.id);
-            if (usersTasks) {
-                for (let task of usersTasks) {
-                    if (task.status == "backlog") {
-                        let taskToAppend = document.createElement("li");
-                        taskToAppend.textContent = task.title;
-                        TasksListBacklog.appendChild(taskToAppend);
-                    }
-                    // TODO: and then append another tasks by status
-                }
+            let backlogTasks = TaskController.getUsersTasksByStatus(user.id, "backlog");
+            let readyTasks = TaskController.getUsersTasksByStatus(user.id, "ready");
+            let inProgressTasks = TaskController.getUsersTasksByStatus(user.id, "in-progress");
+            let finishedTasks = TaskController.getUsersTasksByStatus(user.id, "finished");
+
+            if (backlogTasks) {
+                document.querySelector("#app-add-task-ready").removeAttribute("disabled");
+                backlogTasks.map((taskBacklog) => {
+                    let taskToAppend = document.createElement("li");
+                    taskToAppend.textContent = taskBacklog.title;
+                    tasksListBacklog.appendChild(taskToAppend);
+                });
             }
+
         }
     } else {
         alert("Доступ запрещен!");

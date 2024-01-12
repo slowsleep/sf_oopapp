@@ -68,6 +68,12 @@ export function addTaskBacklog() {
                 newTask.textContent = textareaAddBacklog.value;
                 listTasksBacklog.removeChild(listTasksBacklog.lastChild)
                 listTasksBacklog.appendChild(newTask);
+
+                const btnAddTaskReady =  document.querySelector("#app-add-task-ready");
+
+                if (btnAddTaskReady.getAttribute("disabled")) {
+                    btnAddTaskReady.removeAttribute("disabled");
+                }
             } else {
                 listTasksBacklog.removeChild(listTasksBacklog.lastChild);
             }
