@@ -1,6 +1,7 @@
 import { authUser } from "./auth";
 import { appState } from "../app";
 import { Task } from "../models/Task";
+import * as TaskController from "../controllers/TaskController";
 
 export function loginForm() {
     const loginForm = document.querySelector("#app-login-form");
@@ -81,4 +82,36 @@ export function addTaskBacklog() {
             btnAddTaskBacklog.style.display = "block";
         });
     })
+}
+
+
+export function addTaskReady() {
+    const btnAddTaskReady =  document.querySelector("#app-add-task-ready");
+
+    btnAddTaskReady.addEventListener("click", function () {
+        let user = appState.currentUser;
+        let backlogTasks = TaskController.getUsersTasksByStatus(user.id, "backlog");
+
+        if (backlogTasks.length) {
+            console.log(backlogTasks);
+            let tasksListReady = document.querySelector("#app-tasks-list-ready");
+            let div = document.createElement("div");
+            let select = document.createElement("select");
+            select.classList = "form-select";
+            let defaultOption = document.createElement("option");
+            defaultOption.textContent = "Выберите задачу";
+            select.appendChild(defaultOption);
+
+            for (let task of backlogTasks) {
+                let option = document.createElement("option");
+                option.textContent = task.title;
+                option.dataset.id = task.id;
+                select.appendChild(option);
+            }
+
+            div.appendChild(select);
+            tasksListReady.after(div);
+        }
+    });
+
 }
