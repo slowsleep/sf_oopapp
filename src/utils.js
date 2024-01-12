@@ -8,6 +8,10 @@ export const addToStorage = function (obj, key) {
   localStorage.setItem(key, JSON.stringify(storageData));
 };
 
+export const updateStorage = function (key, obj) {
+  localStorage.setItem(key, JSON.stringify(obj));
+}
+
 export const generateTestUser = function (User) {
   if (!localStorage.users) {
     const testUser = new User("test", "qwerty123");
