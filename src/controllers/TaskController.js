@@ -26,3 +26,17 @@ export function getUsersTasks(userId) {
 
     return usersTask.length ? usersTask : false;
 }
+
+export function getUsersTasksByStatus(userId, status) {
+    let usersTasks = getUsersTasks(userId);
+    let tasksByStatus = [];
+
+    for (let task of usersTasks) {
+        if (task.status == status) {
+            tasksByStatus.push(task);
+        }
+    }
+
+    return tasksByStatus.length ? tasksByStatus : false;
+}
+
