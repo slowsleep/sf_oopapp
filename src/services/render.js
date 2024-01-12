@@ -8,6 +8,17 @@ import * as TaskController from "../controllers/TaskController";
 export function content(isAuth) {
     if (isAuth) {
         document.querySelector("#content").innerHTML = taskFieldTemplate;
+
+        document.querySelector("#app-submit-add-task-backlog").style.display = "none";
+        document.querySelector("#app-submit-add-task-ready").style.display = "none";
+        document.querySelector("#app-add-task-ready").setAttribute("disabled", true);
+
+        document.querySelector("#app-submit-add-task-in-progress").style.display = "none";
+        document.querySelector("#app-add-task-in-progress").setAttribute("disabled", true);
+
+        document.querySelector("#app-submit-add-task-finished").style.display = "none";
+        document.querySelector("#app-add-task-finished").setAttribute("disabled", true);
+
         let TasksListBacklog = document.querySelector(
             "#app-tasks-list-backlog"
         );
