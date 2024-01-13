@@ -45,7 +45,7 @@ export function addTaskBacklog() {
         const taskBacklogList = document.querySelector("#app-tasks-list-backlog");
         const btnSubmitAddTaskBacklog = document.querySelector("#app-submit-add-task-backlog");
         const textArea = document.createElement("textarea");
-        textArea.classList = "rounded";
+        textArea.classList = "form-control rounded";
         textArea.id = "app-textarea-add-backlog";
         taskBacklogList.appendChild(textArea);
         e.target.style.display = "none";
