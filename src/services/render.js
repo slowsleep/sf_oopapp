@@ -60,9 +60,6 @@ export function content(isAuth) {
             }
 
         }
-    } else {
-        alert("Доступ запрещен!");
-        window.location.reload();
     }
 }
 

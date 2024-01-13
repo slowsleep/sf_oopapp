@@ -13,7 +13,7 @@ generateTestUser(User);
 
 let user = getFromStorage("user");
 
-if (localStorage.getItem("user")) {
+if (user.length !== 0) {
   appState.currentUser = user;
   render.content(true);
   render.navRight(true);

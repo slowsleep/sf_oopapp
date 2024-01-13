@@ -23,6 +23,8 @@ export function loginForm() {
                 })
             );
 
+        } else {
+            alert("Доступ запрещен");
         }
 
         window.location.reload();
