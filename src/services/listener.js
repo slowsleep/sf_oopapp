@@ -88,46 +88,58 @@ export function addTaskBacklog() {
 }
 
 
-export function addTaskReady() {
-    const btnAddTaskReady =  document.querySelector("#app-add-task-ready");
+export function addTaskFromTo(oldStatus, newStatus, nextStatus=false) {
+    const btnAddTaskNewStatus =  document.querySelector(`#app-add-task-${newStatus}`);
 
-    btnAddTaskReady.addEventListener("click", function () {
+    btnAddTaskNewStatus.addEventListener("click", function(e) {
+        e.stopImmediatePropagation();
         let user = appState.currentUser;
-        let backlogTasks = TaskController.getUsersTasksByStatus(user.id, "backlog");
-        let selectReady = document.querySelector("#app-select-ready");
-        selectReady.innerHTML = "";
+        let tasksOldStatus = TaskController.getUsersTasksByStatus(user.id, oldStatus);
+        let selectNewStatus = document.querySelector(`#app-select-${newStatus}`);
+        selectNewStatus.innerHTML = "";
         let defaultOption = document.createElement("option");
         defaultOption.textContent = "Выберите задачу";
-        selectReady.appendChild(defaultOption);
+        selectNewStatus.appendChild(defaultOption);
 
-        if (backlogTasks.length) {
-            let taskReadyList = document.querySelector("#app-tasks-list-ready");
+        if (tasksOldStatus.length) {
+            let taskListNewStatus = document.querySelector(`#app-tasks-list-${newStatus}`);
 
-            for (let task of backlogTasks) {
+            for (let task of tasksOldStatus) {
                 let option = document.createElement("option");
                 option.textContent = task.title;
                 option.dataset.id = task.id;
-                selectReady.appendChild(option);
+                selectNewStatus.appendChild(option);
             }
 
-            if (selectReady.style.display == "none") {
-                selectReady.style.display = "block";
+            if (selectNewStatus.style.display == "none") {
+                selectNewStatus.style.display = "block";
             }
 
-            selectReady.addEventListener("change", function(e) {
+            selectNewStatus.addEventListener("change", function(e) {
                 e.stopImmediatePropagation();
                 let selectedTask = {
                     id: e.target.options[e.target.selectedIndex].dataset.id,
-                    title: selectReady.value
+                    title: selectNewStatus.value
                 }
-                let taskBacklogList = document.querySelector("#app-tasks-list-backlog");
-                let oldTaskFromBacklog = document.querySelector(`[data-id="${selectedTask.id}"]`);
-                taskBacklogList.removeChild(oldTaskFromBacklog);
-                TaskController.setStatus(selectedTask.id, "ready");
-                addTaskToList(taskReadyList, selectedTask);
+                let taskListOldStatus = document.querySelector(`#app-tasks-list-${oldStatus}`);
+                let oldTaskFromOldStatus = document.querySelector(`li[data-id="${selectedTask.id}"]`);
+                taskListOldStatus.removeChild(oldTaskFromOldStatus);
+                TaskController.setStatus(selectedTask.id, newStatus);
+                addTaskToList(taskListNewStatus, selectedTask);
                 e.target.style.display = "none";
+
+                if (!taskListOldStatus.childNodes.length) {
+                    console.log(`from ${oldStatus} to ${newStatus} в предыдущем блоке пусто`)
+                    btnAddTaskNewStatus.setAttribute("disabled", true);
+                }
+
+                if (nextStatus) {
+                    console.log(nextStatus)
+                    if (document.querySelector(`#app-add-task-${nextStatus}`).getAttribute("disabled")) {
+                        document.querySelector(`#app-add-task-${nextStatus}`).removeAttribute("disabled");
+                    }
+                }
             })
         }
-    });
-
+    })
 }

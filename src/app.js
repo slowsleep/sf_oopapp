@@ -20,7 +20,9 @@ if (localStorage.getItem("user")) {
   render.footer();
   listener.logoutForm();
   listener.addTaskBacklog();
-  listener.addTaskReady();
+  listener.addTaskFromTo("backlog", "ready", "in-progress");
+  listener.addTaskFromTo("ready", "in-progress", "finished");
+  listener.addTaskFromTo("in-progress", "finished");
 } else {
   render.navRight(false);
   listener.loginForm();

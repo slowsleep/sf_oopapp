@@ -18,6 +18,8 @@ export function content(isAuth) {
         });
 
         document.querySelector("#app-select-ready").style.display = "none";
+        document.querySelector("#app-select-in-progress").style.display = "none";
+        document.querySelector("#app-select-finished").style.display = "none";
 
         let tasksListBacklog = document.querySelector("#app-tasks-list-backlog");
         let tasksListReady = document.querySelector("#app-tasks-list-ready");
@@ -42,6 +44,18 @@ export function content(isAuth) {
                 document.querySelector("#app-add-task-in-progress").removeAttribute("disabled");
                 readyTasks.map((readyTask) => {
                     addTaskToList(tasksListReady, readyTask);
+                });
+            }
+            if (inProgressTasks) {
+                document.querySelector("#app-add-task-finished").removeAttribute("disabled");
+                inProgressTasks.map((inProgressTask) => {
+                    addTaskToList(tasksListInProgress, inProgressTask);
+                });
+            }
+            if (finishedTasks) {
+                // document.querySelector("#app-add-task-finished").removeAttribute("disabled");
+                finishedTasks.map((finishedTask) => {
+                    addTaskToList(tasksListFinished, finishedTask);
                 });
             }
 
