@@ -15,9 +15,13 @@ let user = getFromStorage("user");
 
 if (user.length !== 0) {
   appState.currentUser = user;
-  render.content(true);
+
+  let isAdmin = user.role == "admin" ? true : false;
+
+  render.menu(isAdmin);
   render.navRight(true);
   render.footer();
+  render.content(true);
   listener.logoutForm();
   listener.addTaskBacklog();
   listener.addTaskFromTo("backlog", "ready", "in-progress");

@@ -1,6 +1,8 @@
 import taskFieldTemplate from "../templates/taskField.html";
 import formLoginned from "../templates/nav/right/formLoginned.html";
 import formUnloginned from "../templates/nav/right/formUnloginned.html";
+import adminMenuTemplate from "../templates/nav/menu/adminMenu.html";
+import userMenuTemplate from "../templates/nav/menu/userMenu.html";
 import tasksCounters from "../templates/footer/tasksCounters.html";
 import { appState } from "../app";
 import * as TaskController from "../controllers/TaskController";
@@ -71,6 +73,13 @@ export function addTaskToList(taskList, task) {
     taskToAppend.textContent = task.title;
     li.appendChild(taskToAppend);
     taskList.appendChild(li);
+}
+
+export function menu(isAdmin=false) {
+    document.querySelector("#app-user-menu").innerHTML = userMenuTemplate;
+    if (isAdmin) {
+        document.querySelector("#app-admin-menu").innerHTML = adminMenuTemplate;
+    }
 }
 
 export function navRight(isAuth) {
