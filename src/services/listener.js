@@ -31,10 +31,10 @@ export function loginForm() {
     });
 }
 
-export function logoutForm() {
-    const logoutForm = document.querySelector("#app-logout-form");
+export function logout() {
+    const logoutBtn = document.querySelector("#app-logout-btn");
 
-    logoutForm.addEventListener("submit", function () {
+    logoutBtn.addEventListener("click", function () {
         localStorage.removeItem("user");
         window.location.reload();
     });

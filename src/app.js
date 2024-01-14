@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 import "./styles/style.sass";
 import * as render from "./services/render";
 import * as listener from "./services/listener";
@@ -22,7 +23,7 @@ if (user.length !== 0) {
   render.navRight(true);
   render.footer();
   render.content(true);
-  listener.logoutForm();
+  listener.logout();
   listener.addTaskBacklog();
   listener.addTaskFromTo("backlog", "ready", "in-progress");
   listener.addTaskFromTo("ready", "in-progress", "finished");
