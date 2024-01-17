@@ -7,30 +7,19 @@ import { User } from "./models/User";
 import { generateTestUser } from "./utils";
 import { State } from "./state";
 import { getFromStorage } from "./utils";
+import {route} from "./services/router";
 
 export const appState = new State();
-
 generateTestUser(User);
-
 let user = getFromStorage("user");
 
 if (user.length !== 0) {
   appState.currentUser = user;
-
   let isAdmin = user.role == "admin" ? true : false;
-
-  render.menu(isAdmin);
-  render.navRight(true);
-  render.footer();
-  render.content(true);
+  render.baseTemplate(appState, isAdmin)
+  route(appState)
   listener.logout();
-  listener.addTaskBacklog();
-  listener.addTaskFromTo("backlog", "ready", "in-progress");
-  listener.addTaskFromTo("ready", "in-progress", "finished");
-  listener.addTaskFromTo("in-progress", "finished");
 } else {
   render.navRight(false);
   listener.loginForm();
 }
-
-
