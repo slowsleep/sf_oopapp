@@ -6,6 +6,8 @@ export function route(appState) {
     switch (curPath) {
         case "/":
             return render.content(appState);
+        case "/profile":
+            return render.profile(appState);
         default:
             return render.notFound();
     }

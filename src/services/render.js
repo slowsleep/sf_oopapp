@@ -1,4 +1,5 @@
 import taskFieldTemplate from "../templates/taskField.html";
+import profileTemplate from "../templates/pages/profile.html";
 import formLoginned from "../templates/nav/right/formLoginned.html";
 import formUnloginned from "../templates/nav/right/formUnloginned.html";
 import adminMenuTemplate from "../templates/nav/menu/adminMenu.html";
@@ -115,4 +116,10 @@ export function footer() {
 
 export function notFound() {
     document.querySelector("#content").innerHTML = "404 <br> Page not Found";
+}
+
+export function profile(appState) {
+    document.querySelector("#content").innerHTML = profileTemplate;
+    let user = getUserById(appState.currentUser.id)
+    document.querySelector("#app-profile-login").textContent = user.login;
 }
