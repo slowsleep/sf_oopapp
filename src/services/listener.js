@@ -131,12 +131,10 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus=false) {
                 e.target.style.display = "none";
 
                 if (!taskListOldStatus.childNodes.length) {
-                    console.log(`from ${oldStatus} to ${newStatus} в предыдущем блоке пусто`)
                     btnAddTaskNewStatus.setAttribute("disabled", true);
                 }
 
                 if (nextStatus) {
-                    console.log(nextStatus)
                     if (document.querySelector(`#app-add-task-${nextStatus}`).getAttribute("disabled")) {
                         document.querySelector(`#app-add-task-${nextStatus}`).removeAttribute("disabled");
                     }
