@@ -6,6 +6,7 @@ import userMenuTemplate from "../templates/nav/menu/userMenu.html";
 import tasksCounters from "../templates/footer/tasksCounters.html";
 import { appState } from "../app";
 import * as TaskController from "../controllers/TaskController";
+import { getUserById } from "../controllers/UserController";
 
 export function content(isAuth) {
     if (isAuth) {
@@ -85,6 +86,12 @@ export function menu(isAdmin=false) {
 export function navRight(isAuth) {
     let fieldHTMLContent = isAuth ? formLoginned : formUnloginned;
     document.querySelector("#app-nav-right").innerHTML = fieldHTMLContent;
+    if (appState.currentUser) {
+        let user = getUserById(appState.currentUser.id);
+        if (user) {
+            document.querySelector("#app-menu-login").innerHTML = user.login;
+        }
+    }
 }
 
 export function footer() {
