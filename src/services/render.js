@@ -90,6 +90,10 @@ export function navRight(isAuth) {
         let user = getUserById(appState.currentUser.id);
         if (user) {
             document.querySelector("#app-menu-login").innerHTML = user.login;
+            let userAvatar = document.querySelector("#app-user-avatar");
+            if (user.avatar) {
+                userAvatar = user.avatar;
+            }
         }
     }
 }
