@@ -1,5 +1,6 @@
 import taskFieldTemplate from "../templates/taskField.html";
 import profileTemplate from "../templates/pages/profile.html";
+import adminUsersTemplate from "../templates/pages/admin/users.html";
 import formLoginned from "../templates/nav/right/formLoginned.html";
 import formUnloginned from "../templates/nav/right/formUnloginned.html";
 import adminMenuTemplate from "../templates/nav/menu/adminMenu.html";
@@ -7,7 +8,7 @@ import userMenuTemplate from "../templates/nav/menu/userMenu.html";
 import tasksCounters from "../templates/footer/tasksCounters.html";
 import { appState } from "../app";
 import * as TaskController from "../controllers/TaskController";
-import { getUserById } from "../controllers/UserController";
+import * as UserController from "../controllers/UserController";
 import * as listener from "./listener";
 
 
@@ -99,7 +100,7 @@ export function navRight(isAuth) {
     let fieldHTMLContent = isAuth ? formLoginned : formUnloginned;
     document.querySelector("#app-nav-right").innerHTML = fieldHTMLContent;
     if (appState.currentUser) {
-        let user = getUserById(appState.currentUser.id);
+        let user = UserController.getUserById(appState.currentUser.id);
         if (user) {
             document.querySelector("#app-menu-login").innerHTML = user.login;
             let userAvatar = document.querySelector("#app-user-avatar");
@@ -120,6 +121,53 @@ export function notFound() {
 
 export function profile(appState) {
     document.querySelector("#content").innerHTML = profileTemplate;
-    let user = getUserById(appState.currentUser.id)
+    let user = UserController.getUserById(appState.currentUser.id)
     document.querySelector("#app-profile-login").textContent = user.login;
+}
+
+
+const addUserToList = (user, listTemplate) => {
+    let itemListAdmin = document.createElement("li");
+    itemListAdmin.dataset.id = user.id;
+    itemListAdmin.classList = "d-flex";
+
+    let loginItemListAdmin = document.createElement("p");
+    loginItemListAdmin.classList = "me-2";
+    loginItemListAdmin.textContent = user.login;
+
+    itemListAdmin.appendChild(loginItemListAdmin);
+
+    if (user.id == appState.currentUser.id) {
+        let youTextItemListAdmin = document.createElement("p");
+        youTextItemListAdmin.textContent = "(you)";
+        itemListAdmin.appendChild(youTextItemListAdmin);
+    } else {
+        let deleteBtnItemListAdmin = document.createElement("button");
+        deleteBtnItemListAdmin.classList = "app-btn-user-delete btn btn-danger";
+        deleteBtnItemListAdmin.textContent = "delete";
+        itemListAdmin.appendChild(deleteBtnItemListAdmin);
+    }
+
+    listTemplate.appendChild(itemListAdmin);
+}
+
+export function adminUsers(appState) {
+    document.querySelector("#content").innerHTML = adminUsersTemplate;
+
+    let adminList = document.querySelector("#app-admin-list");
+    let userList = document.querySelector("#app-user-list");
+
+    let users = UserController.getUsers();
+
+    for (let user of users) {
+        if (user.role == "admin") {
+            addUserToList(user, adminList);
+        } else if (user.role == "user") {
+            addUserToList(user, userList);
+        }
+    }
+
+    listener.btnAddUser("user");
+    listener.btnAddUser("admin");
+    listener.btnUserDelete();
 }

@@ -2,7 +2,9 @@ import { authUser } from "./auth";
 import { appState } from "../app";
 import { Task } from "../models/Task";
 import * as TaskController from "../controllers/TaskController";
+import * as UserController from "../controllers/UserController";
 import { addTaskToList } from "./render";
+import { User } from "../models/User";
 
 export function loginForm() {
     const loginForm = document.querySelector("#app-login-form");
@@ -142,4 +144,30 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus=false) {
             })
         }
     })
+}
+
+
+export function btnAddUser(role) {
+    let btn = document.querySelector(`#app-create-${role}`);
+
+    btn.addEventListener("click", function() {
+        let login = prompt("Enter login:");
+        if (!login) return false;
+        let password = prompt("Enter password:");
+        if (!password) return false;
+        UserController.addUser(login, password, role);
+        window.location.reload();
+    })
+}
+
+export function btnUserDelete() {
+    let deleteBtns = document.querySelectorAll(".app-btn-user-delete");
+
+    deleteBtns.forEach(function(btn) {
+        btn.addEventListener("click", function(e) {
+            UserController.deleteUser(e.target.parentNode.dataset.id);
+            // TODO: delete user tasks
+            window.location.reload();
+        });
+    });
 }

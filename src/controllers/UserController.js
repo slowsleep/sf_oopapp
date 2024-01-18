@@ -1,4 +1,4 @@
-import { getFromStorage } from "../utils";
+import { getFromStorage, addToStorage, updateStorage } from "../utils";
 import { User } from "../models/User";
 
 export function getUsers() {
@@ -22,10 +22,6 @@ export function getUserById(id) {
     return false;
 }
 
-// function addUser() {
-
-// }
-
 export function isExists(login, password) {
     let users = getUsers();
     if (!users) return false;
@@ -34,4 +30,22 @@ export function isExists(login, password) {
         return user.id;
     }
     return false;
+}
+
+export function addUser(login, password, role) {
+  let newUser = new User(login, password, role);
+  addToStorage(newUser, "users");
+}
+
+export function deleteUser(id) {
+  let users = getUsers();
+  let newUsers = [];
+
+  for (let user of users) {
+    if (user.id != id) {
+      newUsers.push(user);
+    }
+  }
+
+  updateStorage("users", newUsers);
 }

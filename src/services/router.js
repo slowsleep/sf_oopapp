@@ -8,6 +8,10 @@ export function route(appState) {
             return render.content(appState);
         case "/profile":
             return render.profile(appState);
+        case "/users":
+            if (appState.currentUser.role == "admin") {
+                return render.adminUsers(appState);
+            }
         default:
             return render.notFound();
     }
