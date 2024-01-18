@@ -165,8 +165,9 @@ export function btnUserDelete() {
 
     deleteBtns.forEach(function(btn) {
         btn.addEventListener("click", function(e) {
-            UserController.deleteUser(e.target.parentNode.dataset.id);
-            // TODO: delete user tasks
+            let userId = e.target.parentNode.dataset.id;
+            UserController.deleteUser(userId);
+            TaskController.deleteAllUserTask(userId);
             window.location.reload();
         });
     });

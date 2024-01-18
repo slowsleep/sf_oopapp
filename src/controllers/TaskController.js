@@ -56,3 +56,15 @@ export function setStatus(taskId, status) {
     updateStorage("tasks", tasks);
 }
 
+export function deleteAllUserTask(userId) {
+    let tasks = getFromStorage("tasks");
+    let newTasks = [];
+
+    for (let task of tasks) {
+        if (task.userId != userId) {
+            newTasks.push(task);
+        }
+    }
+
+    updateStorage("tasks", newTasks);
+}
