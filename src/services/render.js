@@ -97,10 +97,7 @@ export function renderCount(user, status) {
 export function addTaskToList(taskList, task) {
     let li = document.createElement("li");
     li.dataset.id = task.id;
-    let taskToAppend = document.createElement("div");
-    taskToAppend.classList = "rounded bg-light p-1 m-2 bg-opacity-50";
-    taskToAppend.textContent = task.title;
-    li.appendChild(taskToAppend);
+    li.textContent = task.title;
     taskList.appendChild(li);
 }
 
