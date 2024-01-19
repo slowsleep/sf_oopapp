@@ -3,7 +3,7 @@ import { appState } from "../app";
 import { Task } from "../models/Task";
 import * as TaskController from "../controllers/TaskController";
 import * as UserController from "../controllers/UserController";
-import { addTaskToList } from "./render";
+import { addTaskToList, renderCount } from "./render";
 import { User } from "../models/User";
 
 export function loginForm() {
@@ -76,6 +76,8 @@ export function addTaskBacklog() {
 
                 taskBacklogList.removeChild(taskBacklogList.lastChild)
                 addTaskToList(taskBacklogList, task);
+                // update count active
+                renderCount(appState.currentUser, "backlog");
 
                 const btnAddTaskReady =  document.querySelector("#app-add-task-ready");
 
@@ -140,6 +142,16 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus=false) {
                     if (document.querySelector(`#app-add-task-${nextStatus}`).getAttribute("disabled")) {
                         document.querySelector(`#app-add-task-${nextStatus}`).removeAttribute("disabled");
                     }
+                }
+
+                // update active task count
+                if (newStatus == "ready") {
+                    renderCount(appState.currentUser, "backlog");
+                }
+
+                // update finished task count
+                if (newStatus == "finished") {
+                    renderCount(appState.currentUser, "finished");
                 }
             })
         }

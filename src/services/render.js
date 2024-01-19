@@ -40,6 +40,7 @@ export function content(appState) {
 
     let user = appState.currentUser;
 
+    // Adding users task to page in blocks by status
     if (user) {
         let backlogTasks = TaskController.getUsersTasksByStatus(user.id, "backlog");
         let readyTasks = TaskController.getUsersTasksByStatus(user.id, "ready");
@@ -65,18 +66,32 @@ export function content(appState) {
             });
         }
         if (finishedTasks) {
-            // document.querySelector("#app-add-task-finished").removeAttribute("disabled");
             finishedTasks.map((finishedTask) => {
                 addTaskToList(tasksListFinished, finishedTask);
             });
         }
 
+        // Adding count task in footer
+        renderCount(user, "backlog");
+        renderCount(user, "finished");
     }
 
     listener.addTaskBacklog();
     listener.addTaskFromTo("backlog", "ready", "in-progress");
     listener.addTaskFromTo("ready", "in-progress", "finished");
     listener.addTaskFromTo("in-progress", "finished");
+}
+
+// Adding count task in footer
+export function renderCount(user, status) {
+    let tasksByStatus = TaskController.getUsersTasksByStatus(user.id, status);
+    let countTask;
+    if (status == "backlog") {
+        countTask = document.querySelector(`#count-active`);
+    } else {
+        countTask = document.querySelector(`#count-${status}`);
+    }
+    countTask.textContent = tasksByStatus.length ? tasksByStatus.length : 0;
 }
 
 export function addTaskToList(taskList, task) {
