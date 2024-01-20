@@ -7,6 +7,7 @@ export class Task extends BaseModel {
     this.title = title;
     this.userId = userId;
     this.status = status;
+    this.description = "";
     this.storageKey = "tasks";
   }
 
