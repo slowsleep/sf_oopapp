@@ -51,23 +51,27 @@ export function content(appState) {
             document.querySelector("#app-add-task-ready").removeAttribute("disabled");
             backlogTasks.map((taskBacklog) => {
                 addTaskToList(tasksListBacklog, taskBacklog);
+                listener.changeModalOnClickTaskById(taskBacklog.id);
             });
         }
         if (readyTasks) {
             document.querySelector("#app-add-task-in-progress").removeAttribute("disabled");
             readyTasks.map((readyTask) => {
                 addTaskToList(tasksListReady, readyTask);
+                listener.changeModalOnClickTaskById(readyTask.id);
             });
         }
         if (inProgressTasks) {
             document.querySelector("#app-add-task-finished").removeAttribute("disabled");
             inProgressTasks.map((inProgressTask) => {
                 addTaskToList(tasksListInProgress, inProgressTask);
+                listener.changeModalOnClickTaskById(inProgressTask.id);
             });
         }
         if (finishedTasks) {
             finishedTasks.map((finishedTask) => {
                 addTaskToList(tasksListFinished, finishedTask);
+                listener.changeModalOnClickTaskById(finishedTask.id);
             });
         }
 
@@ -97,6 +101,8 @@ export function renderCount(user, status) {
 export function addTaskToList(taskList, task) {
     let li = document.createElement("li");
     li.dataset.id = task.id;
+    li.dataset.bsToggle = "modal";
+    li.dataset.bsTarget = "#modalTask";
     li.textContent = task.title;
     taskList.appendChild(li);
 }

@@ -84,6 +84,8 @@ export function addTaskBacklog() {
                 if (btnAddTaskReady.getAttribute("disabled")) {
                     btnAddTaskReady.removeAttribute("disabled");
                 }
+
+                changeModalOnClickTaskById(task.id);
             } else {
                 taskBacklogList.removeChild(taskBacklogList.lastChild);
             }
@@ -153,6 +155,8 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus=false) {
                 if (newStatus == "finished") {
                     renderCount(appState.currentUser, "finished");
                 }
+
+                changeModalOnClickTaskById(selectedTask.id);
             })
         }
     })
@@ -183,4 +187,105 @@ export function btnUserDelete() {
             window.location.reload();
         });
     });
+}
+
+
+function listenModal() {
+    let modal = document.querySelector("#modalTask");
+
+    let modalLabel = document.querySelector("#exampleModalLabel");
+    let contentModalShowTask = document.querySelector("#app-modal-content-task-show");
+    let contentModalEditTask = document.querySelector("#app-modal-content-task-edit");
+    let btnEditTask = document.querySelector("#app-modal-btn-edit-task");
+    let btnSaveTask = document.querySelector("#app-modal-btn-save-task");
+
+    modal.addEventListener("shown.bs.modal", function(e) {
+        let task = TaskController.getTaskById(e.target.dataset.taskId);
+        modalLabel.textContent = task.title;
+
+        if (contentModalShowTask.style.display == "none") {
+            contentModalShowTask.style.display = "block";
+        }
+
+        contentModalEditTask.style.display = "none";
+        btnSaveTask.style.display = "none";
+
+        if (btnEditTask.style.display == "none") {
+            btnEditTask.style.display = "block";
+        }
+
+        document.querySelector("#app-task-title").textContent = task.title;
+        document.querySelector("#app-task-description").textContent = task.description ? task.description : ""
+        btnEditTask.dataset.forTaskId = task.id;
+        btnEditTask.addEventListener("click", clickEditBtnModalTask);
+        btnSaveTask.dataset.forTaskId = task.id;
+        btnSaveTask.addEventListener("click", clickSaveBtnModalTask);
+    });
+
+    modal.addEventListener("hide.bs.modal", function(){
+        btnEditTask.removeEventListener("click", clickEditBtnModalTask);
+        btnSaveTask.removeEventListener("click", clickSaveBtnModalTask);
+        modalLabel.textContent = "";
+        contentModalShowTask.style.display = "none";
+        contentModalEditTask.style.display = "none";
+    });
+
+    function clickEditBtnModalTask(e){
+        let task = TaskController.getTaskById(e.target.dataset.forTaskId);
+        e.target.style.display = "none";
+        contentModalShowTask.style.display = "none";
+        contentModalEditTask.style.display = "block";
+        document.querySelector("#task-title").value = task.title;
+        document.querySelector("#task-description").value = task.description ? task.description : "" ;
+
+        if (btnSaveTask.style.display = "none") {
+            btnSaveTask.style.display = "block";
+        }
+    }
+
+    function clickSaveBtnModalTask(e){
+        e.target.style.display = "none";
+        let taskId = e.target.dataset.forTaskId;
+        let title = document.querySelector("#task-title").value;
+        let description = document.querySelector("#task-description").value;
+        TaskController.updateTask(taskId, title, description);
+
+        btnEditTask.style.display = "block";
+        contentModalEditTask.style.display = "none";
+        contentModalShowTask.style.display = "block";
+
+        let task = TaskController.getTaskById(taskId);
+        modalLabel.textContent = task.title;
+        document.querySelector("#app-task-title").textContent = task.title;
+        document.querySelector("#app-task-description").textContent = task.description ? task.description : "";
+        updateTaskInList(taskId);
+    }
+}
+
+
+/**
+ * Change modal on click only one task in list
+ */
+export function changeModalOnClickTaskById(id) {
+    let liTask = document.querySelector(`li[data-id="${id}"]`);
+
+    liTask.addEventListener("click", function (e) {
+        e.stopImmediatePropagation();
+        let task = TaskController.getTaskById(id);
+        let modal = document.querySelector("#modalTask");
+        modal.dataset.taskId = id;
+        // listenModal(task);
+        listenModal();
+    });
+}
+
+
+/**
+ * Update task in list (li element in ul) on task page
+ * @param {Task.id} id
+ */
+function updateTaskInList(id) {
+    let taskInList = document.querySelector(`li[data-id="${id}"]`);
+    let task = TaskController.getTaskById(id);
+    taskInList.textContent = task.title;
 }

@@ -42,3 +42,30 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modalTask" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="app-modal-content-task-show">
+                    <p>Title: <span id="app-task-title"></span></p>
+                    <p>Description: <span id="app-task-description"></span></p>
+                </div>
+                <div id="app-modal-content-task-edit">
+                    <input type="text" name="task-title" id="task-title">
+                    <textarea class="textarea rounded w-100" name="task-description" id="task-description" cols="30" rows="10" placeholder="Description..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="app-modal-btn-save-task">Save</button>
+                <button type="button" class="btn btn-primary" id="app-modal-btn-edit-task">Edit</button>
+                <button type="button" class="btn btn-danger" id="app-delete-task">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
