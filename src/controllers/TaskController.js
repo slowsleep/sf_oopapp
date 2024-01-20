@@ -9,7 +9,7 @@ export function getTaskById(id) {
                 return task;
             }
         }
-        
+
         return false;
     } catch (e) {
         throw new Error(e);
@@ -68,3 +68,17 @@ export function deleteAllUserTask(userId) {
 
     updateStorage("tasks", newTasks);
 }
+
+export function updateTask(id, title, description) {
+    let tasks = getFromStorage("tasks");
+
+    for (let task of tasks) {
+        if (task.id == id) {
+            task.title = title;
+            task.description = description;
+        }
+    }
+
+    updateStorage("tasks", tasks);
+}
+
