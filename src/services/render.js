@@ -148,10 +148,10 @@ export function profile(appState) {
 const addUserToList = (user, listTemplate) => {
     let itemListAdmin = document.createElement("li");
     itemListAdmin.dataset.id = user.id;
-    itemListAdmin.classList = "d-flex";
+    itemListAdmin.classList = "d-flex justify-content-between align-items-center border-bottom p-2 m-1 border-primary-subtle";
 
     let loginItemListAdmin = document.createElement("p");
-    loginItemListAdmin.classList = "me-2";
+    loginItemListAdmin.classList = "m-0";
     loginItemListAdmin.textContent = user.login;
 
     itemListAdmin.appendChild(loginItemListAdmin);
@@ -159,6 +159,8 @@ const addUserToList = (user, listTemplate) => {
     if (user.id == appState.currentUser.id) {
         let youTextItemListAdmin = document.createElement("p");
         youTextItemListAdmin.textContent = "(you)";
+        youTextItemListAdmin.classList += "m-0 me-3";
+        console.log(itemListAdmin.classList)
         itemListAdmin.appendChild(youTextItemListAdmin);
     } else {
         let deleteBtnItemListAdmin = document.createElement("button");
