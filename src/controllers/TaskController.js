@@ -44,6 +44,19 @@ export function getUsersTasksByStatus(userId, status) {
     return tasksByStatus.length ? tasksByStatus : false;
 }
 
+export function getTasksByStatus(status) {
+    let tasks = getFromStorage("tasks");
+    let tasksByStatus = [];
+
+    for (let task of tasks) {
+        if (task.status == status) {
+            tasksByStatus.push(task);
+        }
+    }
+
+    return tasksByStatus.length ? tasksByStatus : false;
+}
+
 export function setStatus(taskId, status) {
     let tasks = getFromStorage("tasks");
 
