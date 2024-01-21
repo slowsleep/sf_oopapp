@@ -53,7 +53,20 @@ export function setStatus(taskId, status) {
         }
     }
 
-    updateStorage("tasks", tasks);
+    updateStorage(tasks, "tasks");
+}
+
+export function deleteTaskById(id) {
+    let tasks = getFromStorage("tasks");
+    let newTasks = [];
+
+    for (let task of tasks) {
+        if (task.id != id) {
+            newTasks.push(task);
+        }
+    }
+
+    updateStorage(newTasks, "tasks");
 }
 
 export function deleteAllUserTask(userId) {
@@ -66,7 +79,7 @@ export function deleteAllUserTask(userId) {
         }
     }
 
-    updateStorage("tasks", newTasks);
+    updateStorage(newTasks, "tasks");
 }
 
 export function updateTask(id, title, description) {
@@ -79,6 +92,6 @@ export function updateTask(id, title, description) {
         }
     }
 
-    updateStorage("tasks", tasks);
+    updateStorage(tasks, "tasks");
 }
 

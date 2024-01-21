@@ -46,5 +46,5 @@ export function deleteUser(id) {
         }
     }
 
-    updateStorage("users", newUsers);
+    updateStorage(newUsers, "users");
 }
