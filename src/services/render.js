@@ -100,6 +100,7 @@ export function renderCount(user, status) {
 
 export function addTaskToList(taskList, task) {
     let li = document.createElement("li");
+    li.classList = "app-task-list-item";
     li.dataset.id = task.id;
     li.dataset.bsToggle = "modal";
     li.dataset.bsTarget = "#modalTask";
