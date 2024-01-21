@@ -227,6 +227,7 @@ function listenModal() {
     );
     let btnEditTask = document.querySelector("#app-modal-btn-edit-task");
     let btnSaveTask = document.querySelector("#app-modal-btn-save-task");
+    let btnDeleteTask = document.querySelector("#app-modal-btn-delete-task");
 
     modal.addEventListener("shown.bs.modal", function (e) {
         let task = TaskController.getTaskById(e.target.dataset.taskId);
@@ -250,11 +251,14 @@ function listenModal() {
         btnEditTask.addEventListener("click", clickEditBtnModalTask);
         btnSaveTask.dataset.forTaskId = task.id;
         btnSaveTask.addEventListener("click", clickSaveBtnModalTask);
+        btnDeleteTask.dataset.forTaskId = task.id;
+        btnDeleteTask.addEventListener("click", clickDeleteBtnModalTask);
     });
 
     modal.addEventListener("hide.bs.modal", function () {
         btnEditTask.removeEventListener("click", clickEditBtnModalTask);
         btnSaveTask.removeEventListener("click", clickSaveBtnModalTask);
+        btnDeleteTask.removeEventListener("click", clickDeleteBtnModalTask);
         modalLabel.textContent = "";
         contentModalShowTask.style.display = "none";
         contentModalEditTask.style.display = "none";
@@ -293,6 +297,15 @@ function listenModal() {
             task.description ? task.description : "";
         updateTaskInList(taskId);
     }
+
+    function clickDeleteBtnModalTask(e) {
+        let taskId = e.target.dataset.forTaskId;
+        deleteTaskFromList(taskId);
+        let task = TaskController.getTaskById(taskId);
+        TaskController.deleteTaskById(taskId);
+        changeAddButton(task.status);
+        document.querySelector(`button[data-bs-dismiss="modal"]`).dispatchEvent(new Event("click"));
+    }
 }
 
 /**
@@ -303,10 +316,8 @@ export function changeModalOnClickTaskById(id) {
 
     liTask.addEventListener("click", function (e) {
         e.stopImmediatePropagation();
-        let task = TaskController.getTaskById(id);
         let modal = document.querySelector("#modalTask");
         modal.dataset.taskId = id;
-        // listenModal(task);
         listenModal();
     });
 }
@@ -319,4 +330,25 @@ function updateTaskInList(id) {
     let taskInList = document.querySelector(`li[data-id="${id}"]`);
     let task = TaskController.getTaskById(id);
     taskInList.textContent = task.title;
+}
+
+function deleteTaskFromList(id) {
+    let taskInList = document.querySelector(`li[data-id="${id}"]`);
+    taskInList.remove();
+}
+
+function changeAddButton(status) {
+    const statuses = ["backlog", "ready", "in-progress", "finished"];
+
+    if (status !== statuses[3]) {
+        let tasksByStatus = TaskController.getUsersTasksByStatus(appState.currentUser.id, status);
+
+        if (!tasksByStatus) {
+            let indexStatus = statuses.indexOf(status);
+            let nextStatus = statuses[indexStatus+1];
+            let addBtnNextStatus = document.querySelector(`#app-add-task-${nextStatus}`);
+            addBtnNextStatus.setAttribute("disabled", true);
+        }
+
+    }
 }
