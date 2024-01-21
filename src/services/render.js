@@ -10,6 +10,7 @@ import { appState } from "../app";
 import * as TaskController from "../controllers/TaskController";
 import * as UserController from "../controllers/UserController";
 import * as listener from "./listener";
+import {getFromStorage} from "../utils";
 
 export function baseTemplate(appState, isAdmin) {
     navRight(true);
@@ -46,50 +47,68 @@ export function content(appState) {
 
     // Adding users task to page in blocks by status
     if (user) {
-        let backlogTasks = TaskController.getUsersTasksByStatus(
-            user.id,
-            "backlog"
-        );
-        let readyTasks = TaskController.getUsersTasksByStatus(user.id, "ready");
-        let inProgressTasks = TaskController.getUsersTasksByStatus(
-            user.id,
-            "in-progress"
-        );
-        let finishedTasks = TaskController.getUsersTasksByStatus(
-            user.id,
-            "finished"
-        );
+        let isAdmin = false;
+        let backlogTasks, readyTasks, inProgressTasks, finishedTasks;
+        const status = ["backlog", "ready", "in-progress", "finished"];
+        if (user.role == "admin") {
+            isAdmin = true;
+            backlogTasks = [];
+            readyTasks = [];
+            inProgressTasks = [];
+            finishedTasks = [];
+            let tasks = getFromStorage("tasks");
+            for (let task of tasks) {
+                if (task.status == status[0]) backlogTasks.push(task)
+                if (task.status == status[1]) readyTasks.push(task)
+                if (task.status == status[2]) inProgressTasks.push(task)
+                if (task.status == status[3]) finishedTasks.push(task)
+            }
+        } else {
+            backlogTasks = TaskController.getUsersTasksByStatus(
+                user.id,
+                "backlog"
+            );
+            readyTasks = TaskController.getUsersTasksByStatus(user.id, "ready");
+            inProgressTasks = TaskController.getUsersTasksByStatus(
+                user.id,
+                "in-progress"
+            );
+            finishedTasks = TaskController.getUsersTasksByStatus(
+                user.id,
+                "finished"
+            );
+        }
 
-        if (backlogTasks) {
+        if (backlogTasks && backlogTasks.length > 0) {
             document
                 .querySelector("#app-add-task-ready")
                 .removeAttribute("disabled");
             backlogTasks.map((taskBacklog) => {
-                addTaskToList(tasksListBacklog, taskBacklog);
+                addTaskToList(tasksListBacklog, taskBacklog, isAdmin);
                 listener.changeModalOnClickTaskById(taskBacklog.id);
             });
         }
-        if (readyTasks) {
+        if (readyTasks && readyTasks.length > 0) {
             document
                 .querySelector("#app-add-task-in-progress")
                 .removeAttribute("disabled");
             readyTasks.map((readyTask) => {
-                addTaskToList(tasksListReady, readyTask);
+                addTaskToList(tasksListReady, readyTask, isAdmin);
                 listener.changeModalOnClickTaskById(readyTask.id);
             });
         }
-        if (inProgressTasks) {
+        if (inProgressTasks && inProgressTasks.length > 0) {
             document
                 .querySelector("#app-add-task-finished")
                 .removeAttribute("disabled");
             inProgressTasks.map((inProgressTask) => {
-                addTaskToList(tasksListInProgress, inProgressTask);
+                addTaskToList(tasksListInProgress, inProgressTask, isAdmin);
                 listener.changeModalOnClickTaskById(inProgressTask.id);
             });
         }
-        if (finishedTasks) {
+        if (finishedTasks && finishedTasks.length > 0) {
             finishedTasks.map((finishedTask) => {
-                addTaskToList(tasksListFinished, finishedTask);
+                addTaskToList(tasksListFinished, finishedTask, isAdmin);
                 listener.changeModalOnClickTaskById(finishedTask.id);
             });
         }
@@ -117,13 +136,17 @@ export function renderCount(user, status) {
     countTask.textContent = tasksByStatus.length ? tasksByStatus.length : 0;
 }
 
-export function addTaskToList(taskList, task) {
+export function addTaskToList(taskList, task, isAdmin=false) {
     let li = document.createElement("li");
     li.classList = "app-task-list-item";
     li.dataset.id = task.id;
     li.dataset.bsToggle = "modal";
     li.dataset.bsTarget = "#modalTask";
-    li.textContent = task.title;
+    if (isAdmin) {
+        let ownerTask = UserController.getUserById(task.userId);
+        li.textContent = `${ownerTask.login}: `;
+    }
+    li.textContent += task.title;
     taskList.appendChild(li);
 }
 
@@ -179,7 +202,6 @@ const addUserToList = (user, listTemplate) => {
         let youTextItemListAdmin = document.createElement("p");
         youTextItemListAdmin.textContent = "(you)";
         youTextItemListAdmin.classList += "m-0 me-3";
-        console.log(itemListAdmin.classList);
         itemListAdmin.appendChild(youTextItemListAdmin);
     } else {
         let deleteBtnItemListAdmin = document.createElement("button");

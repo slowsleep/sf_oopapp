@@ -79,10 +79,12 @@ export function addTaskBacklog() {
                 let task = {
                     id: taskEntity.id,
                     title: textareaAddBacklog.value,
+                    userId: appState.currentUser.id
                 };
 
                 taskBacklogList.removeChild(taskBacklogList.lastChild);
-                addTaskToList(taskBacklogList, task);
+                let isAdmin = appState.currentUser.role == "admin" ? true : false;
+                addTaskToList(taskBacklogList, task, isAdmin);
                 // update count active
                 renderCount(appState.currentUser, "backlog");
 
@@ -110,12 +112,20 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus = false) {
     );
 
     btnAddTaskNewStatus.addEventListener("click", function (e) {
+        let isAdmin = appState.currentUser.role == "admin";
         e.stopImmediatePropagation();
         let user = appState.currentUser;
-        let tasksOldStatus = TaskController.getUsersTasksByStatus(
-            user.id,
-            oldStatus
-        );
+
+        let tasksOldStatus;
+        if (isAdmin) {
+            tasksOldStatus = TaskController.getTasksByStatus(oldStatus);
+        } else {
+            tasksOldStatus = TaskController.getUsersTasksByStatus(
+                user.id,
+                oldStatus
+            );
+        }
+
         let selectNewStatus = document.querySelector(
             `#app-select-${newStatus}`
         );
@@ -145,6 +155,7 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus = false) {
                 let selectedTask = {
                     id: e.target.options[e.target.selectedIndex].dataset.id,
                     title: selectNewStatus.value,
+                    userId: TaskController.getTaskById(e.target.options[e.target.selectedIndex].dataset.id).userId
                 };
                 let taskListOldStatus = document.querySelector(
                     `#app-tasks-list-${oldStatus}`
@@ -154,7 +165,9 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus = false) {
                 );
                 taskListOldStatus.removeChild(oldTaskFromOldStatus);
                 TaskController.setStatus(selectedTask.id, newStatus);
-                addTaskToList(taskListNewStatus, selectedTask);
+
+                let isAdmin = appState.currentUser.role == "admin";
+                addTaskToList(taskListNewStatus, selectedTask, isAdmin);
                 e.target.style.display = "none";
 
                 if (!taskListOldStatus.childNodes.length) {
@@ -295,7 +308,8 @@ function listenModal() {
         document.querySelector("#app-task-title").textContent = task.title;
         document.querySelector("#app-task-description").textContent =
             task.description ? task.description : "";
-        updateTaskInList(taskId);
+        let isAdmin = appState.currentUser.role == "admin";
+        updateTaskInList(taskId, isAdmin);
     }
 
     function clickDeleteBtnModalTask(e) {
@@ -326,10 +340,16 @@ export function changeModalOnClickTaskById(id) {
  * Update task in list (li element in ul) on task page
  * @param {Task.id} id
  */
-function updateTaskInList(id) {
+function updateTaskInList(id, isAdmin=false) {
     let taskInList = document.querySelector(`li[data-id="${id}"]`);
     let task = TaskController.getTaskById(id);
-    taskInList.textContent = task.title;
+    if (isAdmin) {
+        let ownreTask = UserController.getUserById(task.userId);
+        taskInList.textContent = `${ownreTask.login}: `;
+        taskInList.textContent += task.title;
+    } else {
+        taskInList.textContent = task.title;
+    }
 }
 
 function deleteTaskFromList(id) {
