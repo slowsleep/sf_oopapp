@@ -1,4 +1,4 @@
-import { getFromStorage, addToStorage, updateStorage } from "../utils";
+import { getFromStorage, updateStorage } from "../utils";
 
 export function getTaskById(id) {
     try {

@@ -15,5 +15,4 @@ export function route(appState) {
         default:
             return render.notFound();
     }
-
 }

@@ -11,7 +11,6 @@ import * as TaskController from "../controllers/TaskController";
 import * as UserController from "../controllers/UserController";
 import * as listener from "./listener";
 
-
 export function baseTemplate(appState, isAdmin) {
     navRight(true);
     menu(isAdmin);
@@ -22,11 +21,14 @@ export function content(appState) {
     document.querySelector("#content").innerHTML = taskFieldTemplate;
 
     ["backlog", "ready", "in-progress", "finished"].map((status) => {
-        document.querySelector(`#app-submit-add-task-${status}`).style.display = "none";
+        document.querySelector(`#app-submit-add-task-${status}`).style.display =
+            "none";
     });
 
     ["ready", "in-progress", "finished"].map((status) => {
-        document.querySelector(`#app-add-task-${status}`).setAttribute("disabled", true);
+        document
+            .querySelector(`#app-add-task-${status}`)
+            .setAttribute("disabled", true);
     });
 
     document.querySelector("#app-select-ready").style.display = "none";
@@ -35,34 +37,51 @@ export function content(appState) {
 
     let tasksListBacklog = document.querySelector("#app-tasks-list-backlog");
     let tasksListReady = document.querySelector("#app-tasks-list-ready");
-    let tasksListInProgress = document.querySelector("#app-tasks-list-in-progress");
+    let tasksListInProgress = document.querySelector(
+        "#app-tasks-list-in-progress"
+    );
     let tasksListFinished = document.querySelector("#app-tasks-list-finished");
 
     let user = appState.currentUser;
 
     // Adding users task to page in blocks by status
     if (user) {
-        let backlogTasks = TaskController.getUsersTasksByStatus(user.id, "backlog");
+        let backlogTasks = TaskController.getUsersTasksByStatus(
+            user.id,
+            "backlog"
+        );
         let readyTasks = TaskController.getUsersTasksByStatus(user.id, "ready");
-        let inProgressTasks = TaskController.getUsersTasksByStatus(user.id, "in-progress");
-        let finishedTasks = TaskController.getUsersTasksByStatus(user.id, "finished");
+        let inProgressTasks = TaskController.getUsersTasksByStatus(
+            user.id,
+            "in-progress"
+        );
+        let finishedTasks = TaskController.getUsersTasksByStatus(
+            user.id,
+            "finished"
+        );
 
         if (backlogTasks) {
-            document.querySelector("#app-add-task-ready").removeAttribute("disabled");
+            document
+                .querySelector("#app-add-task-ready")
+                .removeAttribute("disabled");
             backlogTasks.map((taskBacklog) => {
                 addTaskToList(tasksListBacklog, taskBacklog);
                 listener.changeModalOnClickTaskById(taskBacklog.id);
             });
         }
         if (readyTasks) {
-            document.querySelector("#app-add-task-in-progress").removeAttribute("disabled");
+            document
+                .querySelector("#app-add-task-in-progress")
+                .removeAttribute("disabled");
             readyTasks.map((readyTask) => {
                 addTaskToList(tasksListReady, readyTask);
                 listener.changeModalOnClickTaskById(readyTask.id);
             });
         }
         if (inProgressTasks) {
-            document.querySelector("#app-add-task-finished").removeAttribute("disabled");
+            document
+                .querySelector("#app-add-task-finished")
+                .removeAttribute("disabled");
             inProgressTasks.map((inProgressTask) => {
                 addTaskToList(tasksListInProgress, inProgressTask);
                 listener.changeModalOnClickTaskById(inProgressTask.id);
@@ -108,7 +127,7 @@ export function addTaskToList(taskList, task) {
     taskList.appendChild(li);
 }
 
-export function menu(isAdmin=false) {
+export function menu(isAdmin = false) {
     document.querySelector("#app-user-menu").innerHTML = userMenuTemplate;
     if (isAdmin) {
         document.querySelector("#app-admin-menu").innerHTML = adminMenuTemplate;
@@ -140,15 +159,15 @@ export function notFound() {
 
 export function profile(appState) {
     document.querySelector("#content").innerHTML = profileTemplate;
-    let user = UserController.getUserById(appState.currentUser.id)
+    let user = UserController.getUserById(appState.currentUser.id);
     document.querySelector("#app-profile-login").textContent = user.login;
 }
-
 
 const addUserToList = (user, listTemplate) => {
     let itemListAdmin = document.createElement("li");
     itemListAdmin.dataset.id = user.id;
-    itemListAdmin.classList = "d-flex justify-content-between align-items-center border-bottom p-2 m-1 border-primary-subtle";
+    itemListAdmin.classList =
+        "d-flex justify-content-between align-items-center border-bottom p-2 m-1 border-primary-subtle";
 
     let loginItemListAdmin = document.createElement("p");
     loginItemListAdmin.classList = "m-0";
@@ -160,7 +179,7 @@ const addUserToList = (user, listTemplate) => {
         let youTextItemListAdmin = document.createElement("p");
         youTextItemListAdmin.textContent = "(you)";
         youTextItemListAdmin.classList += "m-0 me-3";
-        console.log(itemListAdmin.classList)
+        console.log(itemListAdmin.classList);
         itemListAdmin.appendChild(youTextItemListAdmin);
     } else {
         let deleteBtnItemListAdmin = document.createElement("button");
@@ -170,7 +189,7 @@ const addUserToList = (user, listTemplate) => {
     }
 
     listTemplate.appendChild(itemListAdmin);
-}
+};
 
 export function adminUsers(appState) {
     document.querySelector("#content").innerHTML = adminUsersTemplate;

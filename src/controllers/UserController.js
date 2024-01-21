@@ -10,14 +10,14 @@ export function getUserById(id) {
     let users = getUsers();
     if (!users) return false;
     for (let user of users) {
-      if (user.id == id) {
-        let curUs = new User();
-        curUs.id = user.id;
-        curUs.login = user.login;
-        curUs.password = user.password;
-        curUs.role = user.role;
-        return curUs;
-      }
+        if (user.id == id) {
+            let curUs = new User();
+            curUs.id = user.id;
+            curUs.login = user.login;
+            curUs.password = user.password;
+            curUs.role = user.role;
+            return curUs;
+        }
     }
     return false;
 }
@@ -26,26 +26,25 @@ export function isExists(login, password) {
     let users = getUsers();
     if (!users) return false;
     for (let user of users) {
-      if (user.login == login && user.password == password)
-        return user.id;
+        if (user.login == login && user.password == password) return user.id;
     }
     return false;
 }
 
 export function addUser(login, password, role) {
-  let newUser = new User(login, password, role);
-  addToStorage(newUser, "users");
+    let newUser = new User(login, password, role);
+    addToStorage(newUser, "users");
 }
 
 export function deleteUser(id) {
-  let users = getUsers();
-  let newUsers = [];
+    let users = getUsers();
+    let newUsers = [];
 
-  for (let user of users) {
-    if (user.id != id) {
-      newUsers.push(user);
+    for (let user of users) {
+        if (user.id != id) {
+            newUsers.push(user);
+        }
     }
-  }
 
-  updateStorage("users", newUsers);
+    updateStorage("users", newUsers);
 }

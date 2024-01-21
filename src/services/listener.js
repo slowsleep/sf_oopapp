@@ -4,7 +4,6 @@ import { Task } from "../models/Task";
 import * as TaskController from "../controllers/TaskController";
 import * as UserController from "../controllers/UserController";
 import { addTaskToList, renderCount } from "./render";
-import { User } from "../models/User";
 
 export function loginForm() {
     const loginForm = document.querySelector("#app-login-form");
@@ -24,7 +23,6 @@ export function loginForm() {
                     role: appState.currentUser.role,
                 })
             );
-
         } else {
             alert("Доступ запрещен");
         }
@@ -45,9 +43,13 @@ export function logout() {
 export function addTaskBacklog() {
     const btnAddTaskBacklog = document.querySelector("#app-add-task-backlog");
 
-    btnAddTaskBacklog.addEventListener("click", function(e) {
-        const taskBacklogList = document.querySelector("#app-tasks-list-backlog");
-        const btnSubmitAddTaskBacklog = document.querySelector("#app-submit-add-task-backlog");
+    btnAddTaskBacklog.addEventListener("click", function (e) {
+        const taskBacklogList = document.querySelector(
+            "#app-tasks-list-backlog"
+        );
+        const btnSubmitAddTaskBacklog = document.querySelector(
+            "#app-submit-add-task-backlog"
+        );
         const textArea = document.createElement("textarea");
         textArea.classList = "form-control rounded";
         textArea.id = "app-textarea-add-backlog";
@@ -58,28 +60,35 @@ export function addTaskBacklog() {
             btnSubmitAddTaskBacklog.style.display = "block";
         }
 
-        btnSubmitAddTaskBacklog.addEventListener("click", function(e) {
+        btnSubmitAddTaskBacklog.addEventListener("click", function (e) {
             e.stopImmediatePropagation();
             e.target.style.display = "none";
 
-            let textareaAddBacklog = document.querySelector("#app-textarea-add-backlog");
+            let textareaAddBacklog = document.querySelector(
+                "#app-textarea-add-backlog"
+            );
 
             if (textareaAddBacklog.value) {
-
-                let taskEntity = new Task(textareaAddBacklog.value, appState.currentUser.id, "backlog");
+                let taskEntity = new Task(
+                    textareaAddBacklog.value,
+                    appState.currentUser.id,
+                    "backlog"
+                );
                 Task.save(taskEntity);
 
                 let task = {
                     id: taskEntity.id,
-                    title: textareaAddBacklog.value
-                }
+                    title: textareaAddBacklog.value,
+                };
 
-                taskBacklogList.removeChild(taskBacklogList.lastChild)
+                taskBacklogList.removeChild(taskBacklogList.lastChild);
                 addTaskToList(taskBacklogList, task);
                 // update count active
                 renderCount(appState.currentUser, "backlog");
 
-                const btnAddTaskReady =  document.querySelector("#app-add-task-ready");
+                const btnAddTaskReady = document.querySelector(
+                    "#app-add-task-ready"
+                );
 
                 if (btnAddTaskReady.getAttribute("disabled")) {
                     btnAddTaskReady.removeAttribute("disabled");
@@ -92,25 +101,33 @@ export function addTaskBacklog() {
 
             btnAddTaskBacklog.style.display = "block";
         });
-    })
+    });
 }
 
+export function addTaskFromTo(oldStatus, newStatus, nextStatus = false) {
+    const btnAddTaskNewStatus = document.querySelector(
+        `#app-add-task-${newStatus}`
+    );
 
-export function addTaskFromTo(oldStatus, newStatus, nextStatus=false) {
-    const btnAddTaskNewStatus =  document.querySelector(`#app-add-task-${newStatus}`);
-
-    btnAddTaskNewStatus.addEventListener("click", function(e) {
+    btnAddTaskNewStatus.addEventListener("click", function (e) {
         e.stopImmediatePropagation();
         let user = appState.currentUser;
-        let tasksOldStatus = TaskController.getUsersTasksByStatus(user.id, oldStatus);
-        let selectNewStatus = document.querySelector(`#app-select-${newStatus}`);
+        let tasksOldStatus = TaskController.getUsersTasksByStatus(
+            user.id,
+            oldStatus
+        );
+        let selectNewStatus = document.querySelector(
+            `#app-select-${newStatus}`
+        );
         selectNewStatus.innerHTML = "";
         let defaultOption = document.createElement("option");
         defaultOption.textContent = "Выберите задачу";
         selectNewStatus.appendChild(defaultOption);
 
         if (tasksOldStatus.length) {
-            let taskListNewStatus = document.querySelector(`#app-tasks-list-${newStatus}`);
+            let taskListNewStatus = document.querySelector(
+                `#app-tasks-list-${newStatus}`
+            );
 
             for (let task of tasksOldStatus) {
                 let option = document.createElement("option");
@@ -123,14 +140,18 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus=false) {
                 selectNewStatus.style.display = "block";
             }
 
-            selectNewStatus.addEventListener("change", function(e) {
+            selectNewStatus.addEventListener("change", function (e) {
                 e.stopImmediatePropagation();
                 let selectedTask = {
                     id: e.target.options[e.target.selectedIndex].dataset.id,
-                    title: selectNewStatus.value
-                }
-                let taskListOldStatus = document.querySelector(`#app-tasks-list-${oldStatus}`);
-                let oldTaskFromOldStatus = document.querySelector(`li[data-id="${selectedTask.id}"]`);
+                    title: selectNewStatus.value,
+                };
+                let taskListOldStatus = document.querySelector(
+                    `#app-tasks-list-${oldStatus}`
+                );
+                let oldTaskFromOldStatus = document.querySelector(
+                    `li[data-id="${selectedTask.id}"]`
+                );
                 taskListOldStatus.removeChild(oldTaskFromOldStatus);
                 TaskController.setStatus(selectedTask.id, newStatus);
                 addTaskToList(taskListNewStatus, selectedTask);
@@ -141,8 +162,14 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus=false) {
                 }
 
                 if (nextStatus) {
-                    if (document.querySelector(`#app-add-task-${nextStatus}`).getAttribute("disabled")) {
-                        document.querySelector(`#app-add-task-${nextStatus}`).removeAttribute("disabled");
+                    if (
+                        document
+                            .querySelector(`#app-add-task-${nextStatus}`)
+                            .getAttribute("disabled")
+                    ) {
+                        document
+                            .querySelector(`#app-add-task-${nextStatus}`)
+                            .removeAttribute("disabled");
                     }
                 }
 
@@ -157,30 +184,29 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus=false) {
                 }
 
                 changeModalOnClickTaskById(selectedTask.id);
-            })
+            });
         }
-    })
+    });
 }
-
 
 export function btnAddUser(role) {
     let btn = document.querySelector(`#app-create-${role}`);
 
-    btn.addEventListener("click", function() {
+    btn.addEventListener("click", function () {
         let login = prompt("Enter login:");
         if (!login) return false;
         let password = prompt("Enter password:");
         if (!password) return false;
         UserController.addUser(login, password, role);
         window.location.reload();
-    })
+    });
 }
 
 export function btnUserDelete() {
     let deleteBtns = document.querySelectorAll(".app-btn-user-delete");
 
-    deleteBtns.forEach(function(btn) {
-        btn.addEventListener("click", function(e) {
+    deleteBtns.forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
             let userId = e.target.parentNode.dataset.id;
             UserController.deleteUser(userId);
             TaskController.deleteAllUserTask(userId);
@@ -189,17 +215,20 @@ export function btnUserDelete() {
     });
 }
 
-
 function listenModal() {
     let modal = document.querySelector("#modalTask");
 
     let modalLabel = document.querySelector("#exampleModalLabel");
-    let contentModalShowTask = document.querySelector("#app-modal-content-task-show");
-    let contentModalEditTask = document.querySelector("#app-modal-content-task-edit");
+    let contentModalShowTask = document.querySelector(
+        "#app-modal-content-task-show"
+    );
+    let contentModalEditTask = document.querySelector(
+        "#app-modal-content-task-edit"
+    );
     let btnEditTask = document.querySelector("#app-modal-btn-edit-task");
     let btnSaveTask = document.querySelector("#app-modal-btn-save-task");
 
-    modal.addEventListener("shown.bs.modal", function(e) {
+    modal.addEventListener("shown.bs.modal", function (e) {
         let task = TaskController.getTaskById(e.target.dataset.taskId);
         modalLabel.textContent = task.title;
 
@@ -215,14 +244,15 @@ function listenModal() {
         }
 
         document.querySelector("#app-task-title").textContent = task.title;
-        document.querySelector("#app-task-description").textContent = task.description ? task.description : ""
+        document.querySelector("#app-task-description").textContent =
+            task.description ? task.description : "";
         btnEditTask.dataset.forTaskId = task.id;
         btnEditTask.addEventListener("click", clickEditBtnModalTask);
         btnSaveTask.dataset.forTaskId = task.id;
         btnSaveTask.addEventListener("click", clickSaveBtnModalTask);
     });
 
-    modal.addEventListener("hide.bs.modal", function(){
+    modal.addEventListener("hide.bs.modal", function () {
         btnEditTask.removeEventListener("click", clickEditBtnModalTask);
         btnSaveTask.removeEventListener("click", clickSaveBtnModalTask);
         modalLabel.textContent = "";
@@ -230,20 +260,22 @@ function listenModal() {
         contentModalEditTask.style.display = "none";
     });
 
-    function clickEditBtnModalTask(e){
+    function clickEditBtnModalTask(e) {
         let task = TaskController.getTaskById(e.target.dataset.forTaskId);
         e.target.style.display = "none";
         contentModalShowTask.style.display = "none";
         contentModalEditTask.style.display = "block";
         document.querySelector("#task-title").value = task.title;
-        document.querySelector("#task-description").value = task.description ? task.description : "" ;
+        document.querySelector("#task-description").value = task.description
+            ? task.description
+            : "";
 
-        if (btnSaveTask.style.display = "none") {
+        if ((btnSaveTask.style.display = "none")) {
             btnSaveTask.style.display = "block";
         }
     }
 
-    function clickSaveBtnModalTask(e){
+    function clickSaveBtnModalTask(e) {
         e.target.style.display = "none";
         let taskId = e.target.dataset.forTaskId;
         let title = document.querySelector("#task-title").value;
@@ -257,11 +289,11 @@ function listenModal() {
         let task = TaskController.getTaskById(taskId);
         modalLabel.textContent = task.title;
         document.querySelector("#app-task-title").textContent = task.title;
-        document.querySelector("#app-task-description").textContent = task.description ? task.description : "";
+        document.querySelector("#app-task-description").textContent =
+            task.description ? task.description : "";
         updateTaskInList(taskId);
     }
 }
-
 
 /**
  * Change modal on click only one task in list
@@ -278,7 +310,6 @@ export function changeModalOnClickTaskById(id) {
         listenModal();
     });
 }
-
 
 /**
  * Update task in list (li element in ul) on task page
