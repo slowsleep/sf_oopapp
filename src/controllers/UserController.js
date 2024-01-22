@@ -36,6 +36,18 @@ export function addUser(login, password, role) {
     addToStorage(newUser, "users");
 }
 
+export function updateUser(user) {
+    let users = getUsers();
+
+    for (let tempUser of users) {
+        if (tempUser.id == user.id) {
+            tempUser.login = user.login;
+        }
+    }
+    
+    updateStorage(users, "users");
+}
+
 export function deleteUser(id) {
     let users = getUsers();
     let newUsers = [];
@@ -48,3 +60,4 @@ export function deleteUser(id) {
 
     updateStorage(newUsers, "users");
 }
+

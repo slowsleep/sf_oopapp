@@ -11,6 +11,7 @@ import * as TaskController from "../controllers/TaskController";
 import * as UserController from "../controllers/UserController";
 import * as listener from "./listener";
 import {getFromStorage} from "../utils";
+import { User } from "../models/User";
 
 export function baseTemplate(appState, isAdmin) {
     navRight(true);
@@ -183,7 +184,47 @@ export function notFound() {
 export function profile(appState) {
     document.querySelector("#content").innerHTML = profileTemplate;
     let user = UserController.getUserById(appState.currentUser.id);
-    document.querySelector("#app-profile-login").textContent = user.login;
+    let profileLogin = document.querySelector("#app-profile-login");
+    profileLogin.textContent = user.login;
+
+    let profileContent = document.querySelector("#app-profile-content");
+    let formChange = document.querySelector("#app-form-profile-change");
+    formChange.style.display = "none";
+
+    let btnChange = document.querySelector("#app-btn-change-profile");
+
+    btnChange.addEventListener("click", function(e) {
+        e.target.style.display = "none";
+        formChange.style.display = "block";
+        profileContent.style.display = "none";
+
+        document.querySelector("#app-form-change-login").value = user.login;
+
+        let btnCancel = document.querySelector("#app-btn-cancel-change-profile");
+        btnCancel.addEventListener("click", function() {
+            profileContent.style.display = "block";
+            formChange.style.display = "none";
+            btnChange.style.display = "block";
+        });
+
+        let btnSave = document.querySelector("#app-btn-save-change-profile");
+        btnSave.addEventListener("click", function() {
+            let newLogin = document.querySelector("#app-form-change-login").value;
+            if (newLogin) {
+                user.login = newLogin;
+                UserController.updateUser(user);
+
+                profileLogin.textContent = user.login;
+                let menuLogin = document.querySelector("#app-menu-login");
+                menuLogin.textContent = user.login;
+
+                profileContent.style.display = "block";
+                formChange.style.display = "none";
+                btnChange.style.display = "block";
+            }
+
+        });
+    })
 }
 
 const addUserToList = (user, listTemplate) => {
