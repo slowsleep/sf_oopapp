@@ -1,5 +1,8 @@
 @import "bootstrap"
 
+.dropdown-toggle.show::after
+  transform: rotate(180deg)
+
 .main
   min-height: 85vh
 
@@ -35,6 +38,10 @@
 
 .dropdown > .btn-secondary
   color: white
+
+
+
+
 
 @include media-breakpoint-down(lg)
   .app-blocks-status
