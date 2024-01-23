@@ -97,6 +97,7 @@ export function addTaskBacklog() {
                 }
 
                 changeModalOnClickTaskById(task.id);
+                taskDrag(task.id);
             } else {
                 taskBacklogList.removeChild(taskBacklogList.lastChild);
             }
@@ -197,6 +198,7 @@ export function addTaskFromTo(oldStatus, newStatus, nextStatus = false) {
                 }
 
                 changeModalOnClickTaskById(selectedTask.id);
+                taskDrag(selectedTask.id);
             });
         }
     });
@@ -361,14 +363,98 @@ function changeAddButton(status) {
     const statuses = ["backlog", "ready", "in-progress", "finished"];
 
     if (status !== statuses[3]) {
-        let tasksByStatus = TaskController.getUsersTasksByStatus(appState.currentUser.id, status);
+        let tasksByStatus;
 
-        if (!tasksByStatus) {
-            let indexStatus = statuses.indexOf(status);
-            let nextStatus = statuses[indexStatus+1];
-            let addBtnNextStatus = document.querySelector(`#app-add-task-${nextStatus}`);
-            addBtnNextStatus.setAttribute("disabled", true);
+        if (appState.currentUser.role == "admin") {
+            tasksByStatus = TaskController.getTasksByStatus(status);
+        } else {
+            tasksByStatus = TaskController.getUsersTasksByStatus(appState.currentUser.id, status);
         }
 
+        let indexStatus = statuses.indexOf(status);
+        let nextStatus = statuses[indexStatus+1];
+        let addBtnNextStatus = document.querySelector(`#app-add-task-${nextStatus}`);
+
+        if (!tasksByStatus) {
+            addBtnNextStatus.setAttribute("disabled", true);
+        } else {
+            addBtnNextStatus.removeAttribute("disabled");
+        }
+    }
+}
+
+export function taskDrag(taskId) {
+    let task = document.querySelector(`.app-task-list-item[data-id="${taskId}"]`);
+    const statuses = ["backlog", "ready", "in-progress", "finished"];
+
+    task.addEventListener("dragstart", function(e) {
+        let taskID = e.target.dataset.id;
+        let taskEntity = TaskController.getTaskById(taskID);
+        let status = taskEntity.status;
+        let indexStatus = statuses.indexOf(status);
+        let nextStatus = statuses[indexStatus+1];
+
+        if (nextStatus && status != statuses[3] ) {
+            e.dataTransfer.effectAllowed='move';
+            e.dataTransfer.setData("taskId", taskId);
+            let blockNextStatus = document.querySelector(`#app-taskblock-${nextStatus}`);
+            blockNextStatus.addEventListener('dragenter',nextStatusDragenter);
+            blockNextStatus.addEventListener('dragover', nextStatusDragover);
+            blockNextStatus.currentStatus = status;
+            blockNextStatus.nextStatus = nextStatus;
+            blockNextStatus.addEventListener('drop', nextStatusDrop);
+        }
+    });
+
+    task.addEventListener("dragend", function(e) {
+        let taskID = e.target.dataset.id;
+        let taskEntity = TaskController.getTaskById(taskID);
+        let status = taskEntity.status;
+        let indexStatus = statuses.indexOf(status);
+        let nextStatus = statuses[indexStatus+1];
+
+        if (nextStatus) {
+            removeListeners(nextStatus);
+        }
+    });
+
+    function removeListeners(status) {
+        let blockNextStatus = document.querySelector(`#app-taskblock-${status}`);
+        blockNextStatus.removeEventListener('dragenter',nextStatusDragenter);
+        blockNextStatus.removeEventListener('dragover', nextStatusDragover);
+        blockNextStatus.removeEventListener('drop', nextStatusDrop);
+    }
+
+    function nextStatusDragenter(event){
+        event.preventDefault();
+        return true;
+    }
+
+    function nextStatusDragover(event){
+        event.preventDefault();
+    }
+
+    function nextStatusDrop(event) {
+        event.stopPropagation();
+        let currentStatus = event.currentTarget.currentStatus;
+        let nextStatus = event.currentTarget.nextStatus;
+
+        if (nextStatus) {
+            var taskId = event.dataTransfer.getData("taskId");
+            let list = document.querySelector(`#app-tasks-list-${nextStatus}`);
+            let user = UserController.getUserById(appState.currentUser.id)
+
+            list.appendChild(document.querySelector(`li[data-id="${taskId}"]`));
+            TaskController.setStatus(taskId, nextStatus);
+            changeAddButton(nextStatus);
+            changeAddButton(currentStatus);
+            removeListeners(nextStatus);
+
+            if (currentStatus == "backlog") {
+                renderCount(user, currentStatus)
+            } else if ( nextStatus == "finished") {
+                renderCount(user, nextStatus)
+            }
+        }
     }
 }

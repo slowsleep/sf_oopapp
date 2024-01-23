@@ -2,7 +2,7 @@
 
 <div class="container-fluid overflow-hidden">
     <div class="row gx-5 app-blocks-status">
-        <div class="col">
+        <div class="col" id="app-taskblock-backlog">
             <div class="p-2 border rounded bg-status--backlog">
                 <p>Backlog</p>
                 <ul class="list-unstyled" id="app-tasks-list-backlog"></ul>
@@ -10,7 +10,7 @@
                 <button id="app-submit-add-task-backlog" class="btn">Submit</button>
             </div>
         </div>
-        <div class="col">
+        <div class="col" id="app-taskblock-ready">
             <div class="p-2 border rounded bg-status--ready">
                 <p>Ready</p>
                 <ul class="list-unstyled" id="app-tasks-list-ready"></ul>
@@ -20,7 +20,7 @@
                 <button id="app-submit-add-task-ready" class="btn">Submit</button>
             </div>
         </div>
-        <div class="col">
+        <div class="col" id="app-taskblock-in-progress">
             <div class="p-2 border rounded bg-status--in-progress">
                 <p>In progress</p>
                 <ul class="list-unstyled" id="app-tasks-list-in-progress"></ul>
@@ -30,7 +30,7 @@
                 <button id="app-submit-add-task-in-progress" class="btn">Submit</button>
             </div>
         </div>
-        <div class="col">
+        <div class="col" id="app-taskblock-finished">
             <div class="p-2 border rounded bg-status--finished">
                 <p>Finished</p>
                 <ul class="list-unstyled" id="app-tasks-list-finished"></ul>

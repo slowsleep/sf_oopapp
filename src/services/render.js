@@ -87,6 +87,7 @@ export function content(appState) {
             backlogTasks.map((taskBacklog) => {
                 addTaskToList(tasksListBacklog, taskBacklog, isAdmin);
                 listener.changeModalOnClickTaskById(taskBacklog.id);
+                listener.taskDrag(taskBacklog.id);
             });
         }
         if (readyTasks && readyTasks.length > 0) {
@@ -96,6 +97,7 @@ export function content(appState) {
             readyTasks.map((readyTask) => {
                 addTaskToList(tasksListReady, readyTask, isAdmin);
                 listener.changeModalOnClickTaskById(readyTask.id);
+                listener.taskDrag(readyTask.id);
             });
         }
         if (inProgressTasks && inProgressTasks.length > 0) {
@@ -105,6 +107,7 @@ export function content(appState) {
             inProgressTasks.map((inProgressTask) => {
                 addTaskToList(tasksListInProgress, inProgressTask, isAdmin);
                 listener.changeModalOnClickTaskById(inProgressTask.id);
+                listener.taskDrag(inProgressTask.id);
             });
         }
         if (finishedTasks && finishedTasks.length > 0) {
@@ -127,7 +130,12 @@ export function content(appState) {
 
 // Adding count task in footer
 export function renderCount(user, status) {
-    let tasksByStatus = TaskController.getUsersTasksByStatus(user.id, status);
+    let tasksByStatus
+    if (user.role == "admin") {
+        tasksByStatus = TaskController.getTasksByStatus(status);
+    } else {
+        tasksByStatus = TaskController.getUsersTasksByStatus(user.id, status);
+    }
     let countTask;
     if (status == "backlog") {
         countTask = document.querySelector(`#count-active`);
@@ -140,6 +148,7 @@ export function renderCount(user, status) {
 export function addTaskToList(taskList, task, isAdmin=false) {
     let li = document.createElement("li");
     li.classList = "app-task-list-item";
+    li.draggable = true;
     li.dataset.id = task.id;
     li.dataset.bsToggle = "modal";
     li.dataset.bsTarget = "#modalTask";
