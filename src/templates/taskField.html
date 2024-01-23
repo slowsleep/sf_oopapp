@@ -1,9 +1,7 @@
-<h1>Your tasks here</h1>
-
-<div class="container-fluid overflow-hidden">
+<div class="container-fluid mt-4 overflow-hidden">
     <div class="row gx-5 app-blocks-status">
         <div class="col" id="app-taskblock-backlog">
-            <div class="p-2 border rounded bg-status--backlog">
+            <div class="p-2 border rounded block-status">
                 <p>Backlog</p>
                 <ul class="list-unstyled" id="app-tasks-list-backlog"></ul>
                 <button id="app-add-task-backlog" class="btn">+ Add card</button>
@@ -11,7 +9,7 @@
             </div>
         </div>
         <div class="col" id="app-taskblock-ready">
-            <div class="p-2 border rounded bg-status--ready">
+            <div class="p-2 border rounded block-status">
                 <p>Ready</p>
                 <ul class="list-unstyled" id="app-tasks-list-ready"></ul>
                 <select class="form-select" name="app-select-ready" id="app-select-ready">
@@ -21,7 +19,7 @@
             </div>
         </div>
         <div class="col" id="app-taskblock-in-progress">
-            <div class="p-2 border rounded bg-status--in-progress">
+            <div class="p-2 border rounded block-status">
                 <p>In progress</p>
                 <ul class="list-unstyled" id="app-tasks-list-in-progress"></ul>
                 <select class="form-select" name="app-select-in-progress" id="app-select-in-progress">
@@ -31,7 +29,7 @@
             </div>
         </div>
         <div class="col" id="app-taskblock-finished">
-            <div class="p-2 border rounded bg-status--finished">
+            <div class="p-2 border rounded block-status">
                 <p>Finished</p>
                 <ul class="list-unstyled" id="app-tasks-list-finished"></ul>
                 <select class="form-select" name="app-select-finished" id="app-select-finished">
