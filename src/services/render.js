@@ -11,12 +11,11 @@ import * as TaskController from "../controllers/TaskController";
 import * as UserController from "../controllers/UserController";
 import * as listener from "./listener";
 import {getFromStorage} from "../utils";
-import { User } from "../models/User";
 
 export function baseTemplate(appState, isAdmin) {
     navRight(true);
     menu(isAdmin);
-    footer();
+    footer(appState);
 }
 
 export function content(appState) {
@@ -182,8 +181,12 @@ export function navRight(isAuth) {
     }
 }
 
-export function footer() {
+export function footer(appState=false) {
     document.querySelector("#app-footer-counters").innerHTML = tasksCounters;
+    if (appState) {
+        renderCount(appState.currentUser, "backlog")
+        renderCount(appState.currentUser, "finished")
+    }
 }
 
 export function notFound() {
