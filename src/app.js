@@ -23,3 +23,24 @@ if (user.length !== 0) {
     render.navRight(false);
     listener.loginForm();
 }
+
+let links = document.querySelectorAll("a[href]");
+links.forEach((link) => {
+    link.addEventListener("click", function(e) {
+        e.preventDefault();
+
+        let href = this.getAttribute('href');
+        let url = new URL(window.location.href);
+        let spltPathname = url.pathname.split("/")
+        let newEndPartPathname = href !== "/" ? href : "";
+
+        if (spltPathname.length == 2) {
+            spltPathname[1] = newEndPartPathname;
+        } else if (spltPathname.length == 3) {
+            spltPathname[2] = newEndPartPathname;
+        }
+
+        url.pathname = spltPathname.join("");
+        window.location.href = url.href;
+    });
+});
