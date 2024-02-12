@@ -5,10 +5,15 @@ export function route(appState) {
     let path = window.location.pathname;
     let arrPath = path.split("/");
 
-    if (arrPath.length == 2) {
-        curPath = arrPath[1]
-    } else if (arrPath.length == 3) {
-        curPath = arrPath[2]
+    if (arrPath.length) {
+        curPath = arrPath[arrPath.length - 1]
+    }
+
+    // for github
+    let search = window.location.search;
+
+    if (search && search.startsWith("?p=")) {
+        curPath = search.replace("?p=/", "");
     }
 
     switch (curPath) {
