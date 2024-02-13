@@ -29,13 +29,6 @@ links.forEach((link) => {
     link.addEventListener("click", function(e) {
         e.preventDefault();
 
-        // for clear url search in github pages
-        let search = window.location.search;
-
-        if (search) {
-            window.location.search = "";
-        }
-
         let href = this.getAttribute('href');
         let url = new URL(window.location.href);
         let spltPathname = url.pathname.split("/")
@@ -48,6 +41,7 @@ links.forEach((link) => {
         }
 
         url.pathname = spltPathname.join("");
-        window.location.href = url.href;
+        // write new href without source for github pages
+        window.location.href = url.origin + url.pathname;
     });
 });
