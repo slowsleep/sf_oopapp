@@ -29,6 +29,13 @@ links.forEach((link) => {
     link.addEventListener("click", function(e) {
         e.preventDefault();
 
+        // for clear url search in github pages
+        let search = window.location.search;
+
+        if (search) {
+            window.location.search = "";
+        }
+
         let href = this.getAttribute('href');
         let url = new URL(window.location.href);
         let spltPathname = url.pathname.split("/")
